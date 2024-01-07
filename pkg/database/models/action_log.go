@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"primary-api/pkg/database"
+	"time"
+)
 
 // Possible ActionLogEntries types:
 // - Changes to User Table
@@ -16,4 +19,30 @@ type ActionLogEntry struct {
 	CreatedBy string    `json:"created_by" example:"'1234567' or 'System'"`
 	UpdatedAt time.Time `json:"updated_at" example:"2021-01-01T00:00:00Z"`
 	UpdatedBy string    `json:"updated_by" example:"'1234567' or 'System'"`
+}
+
+func (ale *ActionLogEntry) Create() error {
+	return database.DB.Create(ale).Error
+}
+
+func (ale *ActionLogEntry) Update() error {
+	return database.DB.Save(ale).Error
+}
+
+func (ale *ActionLogEntry) Delete() error {
+	return database.DB.Delete(ale).Error
+}
+
+func (ale *ActionLogEntry) Get() error {
+	return database.DB.Where("id = ?", ale.ID).First(ale).Error
+}
+
+func GetAllActionLogEntries() ([]ActionLogEntry, error) {
+	var ale []ActionLogEntry
+	return ale, database.DB.Find(&ale).Error
+}
+
+func GetAllActionLogEntriesByCID(cid uint) ([]ActionLogEntry, error) {
+	var ale []ActionLogEntry
+	return ale, database.DB.Where("cid = ?", cid).Find(&ale).Error
 }

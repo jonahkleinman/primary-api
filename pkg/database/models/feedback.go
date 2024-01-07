@@ -1,6 +1,7 @@
 package models
 
 import (
+	"primary-api/pkg/database"
 	"primary-api/pkg/database/types"
 	"time"
 )
@@ -22,4 +23,25 @@ type Feedback struct {
 	Comment       string               `json:"comment" example:"Great work Raaj!"`
 	CreatedAt     time.Time            `json:"created_at" example:"2021-01-01T00:00:00Z"`
 	UpdatedAt     time.Time            `json:"updated_at" example:"2021-01-01T00:00:00Z"`
+}
+
+func (f *Feedback) Create() error {
+	return database.DB.Create(f).Error
+}
+
+func (f *Feedback) Update() error {
+	return database.DB.Save(f).Error
+}
+
+func (f *Feedback) Delete() error {
+	return database.DB.Delete(f).Error
+}
+
+func (f *Feedback) Get() error {
+	return database.DB.Where("id = ?", f.ID).First(f).Error
+}
+
+func GetAllFeedback() ([]Feedback, error) {
+	var feedback []Feedback
+	return feedback, database.DB.Find(&feedback).Error
 }

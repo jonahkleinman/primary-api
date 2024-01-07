@@ -19,6 +19,6 @@ func Connect(dbConfig *config.DatabaseConfig) {
 		Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
-		log.Fatal("Connection Error:", err)
+		log.Fatal("[Database] Connection Error:", err)
 	}
 }

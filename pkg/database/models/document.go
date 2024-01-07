@@ -1,6 +1,7 @@
 package models
 
 import (
+	"primary-api/pkg/database"
 	"primary-api/pkg/database/types"
 	"time"
 )
@@ -16,4 +17,40 @@ type Document struct {
 	CreatedBy   uint                   `json:"created_by" example:"1293257"`
 	UpdatedAt   time.Time              `json:"updated_at" example:"2021-01-01T00:00:00Z"`
 	UpdatedBy   uint                   `json:"updated_by" example:"1293257"`
+}
+
+func (d *Document) Create() error {
+	return database.DB.Create(d).Error
+}
+
+func (d *Document) Update() error {
+	return database.DB.Save(d).Error
+}
+
+func (d *Document) Delete() error {
+	return database.DB.Delete(d).Error
+}
+
+func (d *Document) Get() error {
+	return database.DB.Where("id = ?", d.ID).First(d).Error
+}
+
+func GetAllDocuments() ([]Document, error) {
+	var documents []Document
+	return documents, database.DB.Find(&documents).Error
+}
+
+func GetAllDocumentsByCategory(category types.DocumentCategory) ([]Document, error) {
+	var documents []Document
+	return documents, database.DB.Where("category = ?", category).Find(&documents).Error
+}
+
+func GetAllDocumentsByFacility(facility string) ([]Document, error) {
+	var documents []Document
+	return documents, database.DB.Where("facility = ?", facility).Find(&documents).Error
+}
+
+func GetAllDocumentsByFacilityAndCategory(facility string, category types.DocumentCategory) ([]Document, error) {
+	var documents []Document
+	return documents, database.DB.Where("facility = ? AND category = ?", facility, category).Find(&documents).Error
 }
