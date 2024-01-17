@@ -1,7 +1,7 @@
 package models
 
 import (
-	"primary-api/pkg/database"
+	"github.com/VATUSA/primary-api/pkg/database"
 	"time"
 )
 

@@ -1,4 +1,4 @@
-module primary-api
+module github.com/VATUSA/primary-api
 
 go 1.21
 

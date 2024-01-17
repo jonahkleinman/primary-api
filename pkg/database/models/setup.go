@@ -1,8 +1,8 @@
 package models
 
 import (
+	"github.com/VATUSA/primary-api/pkg/database"
 	"log"
-	"primary-api/pkg/database"
 )
 
 func AutoMigrate() {

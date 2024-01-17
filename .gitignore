@@ -1,2 +1,5 @@
 .env
 .idea
+
+/cmd/api/main_local.go
+/cmd/database/bootstrap_local.go

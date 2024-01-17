@@ -1,8 +1,8 @@
 package models
 
 import (
+	"github.com/VATUSA/primary-api/pkg/database"
 	"gorm.io/gorm"
-	"primary-api/pkg/database"
 	"strings"
 	"time"
 )

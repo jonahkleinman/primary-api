@@ -1,9 +1,9 @@
 package main
 
 import (
-	"primary-api/pkg/config"
-	"primary-api/pkg/database"
-	"primary-api/pkg/database/models"
+	"github.com/VATUSA/primary-api/pkg/config"
+	"github.com/VATUSA/primary-api/pkg/database"
+	"github.com/VATUSA/primary-api/pkg/database/models"
 )
 
 func main() {
