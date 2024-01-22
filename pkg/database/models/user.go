@@ -53,7 +53,7 @@ func (u *User) Get(db *gorm.DB) error {
 		return db.Where("discord_id = ?", u.DiscordID).First(u).Error
 	}
 
-	return db.Where("cid = ?", u.CID).First(u).Error
+	return db.Where("c_id = ?", u.CID).First(u).Error
 }
 
 func GetAllUsers(db *gorm.DB) ([]User, error) {
