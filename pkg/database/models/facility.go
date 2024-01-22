@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/VATUSA/primary-api/pkg/database"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -16,23 +16,23 @@ type Facility struct {
 	UpdatedAt        time.Time          `json:"updated_at" example:"2021-01-01T00:00:00Z"`
 }
 
-func (f *Facility) Create() error {
-	return database.DB.Create(f).Error
+func (f *Facility) Create(db *gorm.DB) error {
+	return db.Create(f).Error
 }
 
-func (f *Facility) Update() error {
-	return database.DB.Save(f).Error
+func (f *Facility) Update(db *gorm.DB) error {
+	return db.Save(f).Error
 }
 
-func (f *Facility) Delete() error {
-	return database.DB.Delete(f).Error
+func (f *Facility) Delete(db *gorm.DB) error {
+	return db.Delete(f).Error
 }
 
-func (f *Facility) Get() error {
-	return database.DB.Where("id = ?", f.ID).First(f).Error
+func (f *Facility) Get(db *gorm.DB) error {
+	return db.Where("id = ?", f.ID).First(f).Error
 }
 
-func GetAllFacilities() ([]Facility, error) {
+func GetAllFacilities(db *gorm.DB) ([]Facility, error) {
 	var facilities []Facility
-	return facilities, database.DB.Find(&facilities).Error
+	return facilities, db.Find(&facilities).Error
 }

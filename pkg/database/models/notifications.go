@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/VATUSA/primary-api/pkg/database"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -18,28 +18,28 @@ type Notifications struct {
 	UpdatedAt time.Time `json:"updated_at" example:"2021-01-01T00:00:00Z"`
 }
 
-func (n *Notifications) Create() error {
-	return database.DB.Create(n).Error
+func (n *Notifications) Create(db *gorm.DB) error {
+	return db.Create(n).Error
 }
 
-func (n *Notifications) Update() error {
-	return database.DB.Save(n).Error
+func (n *Notifications) Update(db *gorm.DB) error {
+	return db.Save(n).Error
 }
 
-func (n *Notifications) Delete() error {
-	return database.DB.Delete(n).Error
+func (n *Notifications) Delete(db *gorm.DB) error {
+	return db.Delete(n).Error
 }
 
-func (n *Notifications) Get() error {
-	return database.DB.Where("id = ?", n.ID).First(n).Error
+func (n *Notifications) Get(db *gorm.DB) error {
+	return db.Where("id = ?", n.ID).First(n).Error
 }
 
-func GetAllNotifications() ([]Notifications, error) {
+func GetAllNotifications(db *gorm.DB) ([]Notifications, error) {
 	var notifications []Notifications
-	return notifications, database.DB.Find(&notifications).Error
+	return notifications, db.Find(&notifications).Error
 }
 
-func GetAllActiveNotificationsByCID(cid uint) ([]Notifications, error) {
+func GetAllActiveNotificationsByCID(db *gorm.DB, cid uint) ([]Notifications, error) {
 	var notifications []Notifications
-	return notifications, database.DB.Where("cid = ? AND expire_at > ?", cid, time.Now()).Find(&notifications).Error
+	return notifications, db.Where("cid = ? AND expire_at > ?", cid, time.Now()).Find(&notifications).Error
 }

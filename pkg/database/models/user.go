@@ -1,7 +1,6 @@
 package models
 
 import (
-	"github.com/VATUSA/primary-api/pkg/database"
 	"gorm.io/gorm"
 	"strings"
 	"time"
@@ -33,33 +32,33 @@ type User struct {
 	UpdatedAt            time.Time              `json:"updated_at" example:"2021-01-01T00:00:00Z"`
 }
 
-func (u *User) Create() error {
-	return database.DB.Create(u).Error
+func (u *User) Create(db *gorm.DB) error {
+	return db.Create(u).Error
 }
 
-func (u *User) Update() error {
-	return database.DB.Save(u).Error
+func (u *User) Update(db *gorm.DB) error {
+	return db.Save(u).Error
 }
 
-func (u *User) Delete() error {
-	return database.DB.Delete(u).Error
+func (u *User) Delete(db *gorm.DB) error {
+	return db.Delete(u).Error
 }
 
-func (u *User) Get() error {
+func (u *User) Get(db *gorm.DB) error {
 	if u.Email != "" {
-		return database.DB.Where("email = ?", u.Email).First(u).Error
+		return db.Where("email = ?", u.Email).First(u).Error
 	}
 
 	if u.DiscordID != "" {
-		return database.DB.Where("discord_id = ?", u.DiscordID).First(u).Error
+		return db.Where("discord_id = ?", u.DiscordID).First(u).Error
 	}
 
-	return database.DB.Where("cid = ?", u.CID).First(u).Error
+	return db.Where("cid = ?", u.CID).First(u).Error
 }
 
-func GetAllUsers() ([]User, error) {
+func GetAllUsers(db *gorm.DB) ([]User, error) {
 	var users []User
-	return users, database.DB.Find(&users).Error
+	return users, db.Find(&users).Error
 }
 
 func SearchUsersByName(db *gorm.DB, query string) ([]User, error) {

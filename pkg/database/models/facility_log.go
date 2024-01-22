@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/VATUSA/primary-api/pkg/database"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -22,28 +22,28 @@ type FacilityLogEntry struct {
 	UpdatedBy string    `json:"updated_by" example:"'1234567' or 'System'"`
 }
 
-func (fle *FacilityLogEntry) Create() error {
-	return database.DB.Create(fle).Error
+func (fle *FacilityLogEntry) Create(db *gorm.DB) error {
+	return db.Create(fle).Error
 }
 
-func (fle *FacilityLogEntry) Update() error {
-	return database.DB.Save(fle).Error
+func (fle *FacilityLogEntry) Update(db *gorm.DB) error {
+	return db.Save(fle).Error
 }
 
-func (fle *FacilityLogEntry) Delete() error {
-	return database.DB.Delete(fle).Error
+func (fle *FacilityLogEntry) Delete(db *gorm.DB) error {
+	return db.Delete(fle).Error
 }
 
-func (fle *FacilityLogEntry) Get() error {
-	return database.DB.Where("id = ?", fle.ID).First(fle).Error
+func (fle *FacilityLogEntry) Get(db *gorm.DB) error {
+	return db.Where("id = ?", fle.ID).First(fle).Error
 }
 
-func GetAllFacilityLogEntries() ([]FacilityLogEntry, error) {
+func GetAllFacilityLogEntries(db *gorm.DB) ([]FacilityLogEntry, error) {
 	var fle []FacilityLogEntry
-	return fle, database.DB.Find(&fle).Error
+	return fle, db.Find(&fle).Error
 }
 
-func GetAllFacilityLogEntriesByFacility(facility string) ([]FacilityLogEntry, error) {
+func GetAllFacilityLogEntriesByFacility(db *gorm.DB, facility string) ([]FacilityLogEntry, error) {
 	var fle []FacilityLogEntry
-	return fle, database.DB.Where("facility = ?", facility).Find(&fle).Error
+	return fle, db.Where("facility = ?", facility).Find(&fle).Error
 }

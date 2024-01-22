@@ -9,6 +9,6 @@ import (
 func main() {
 	cfg := config.New()
 
-	database.Connect(cfg.Database)
-	models.AutoMigrate()
+	db := database.Connect(cfg.Database)
+	models.AutoMigrate(db)
 }

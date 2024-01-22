@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/VATUSA/primary-api/pkg/database"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -15,40 +15,40 @@ type UserRole struct {
 	UpdatedAt  time.Time `json:"updated_at" example:"2021-01-01T00:00:00Z"`
 }
 
-func (ur *UserRole) Create() error {
-	return database.DB.Create(ur).Error
+func (ur *UserRole) Create(db *gorm.DB) error {
+	return db.Create(ur).Error
 }
 
-func (ur *UserRole) Update() error {
-	return database.DB.Save(ur).Error
+func (ur *UserRole) Update(db *gorm.DB) error {
+	return db.Save(ur).Error
 }
 
-func (ur *UserRole) Delete() error {
-	return database.DB.Delete(ur).Error
+func (ur *UserRole) Delete(db *gorm.DB) error {
+	return db.Delete(ur).Error
 }
 
-func (ur *UserRole) Get() error {
-	return database.DB.Where("id = ?", ur.ID).First(ur).Error
+func (ur *UserRole) Get(db *gorm.DB) error {
+	return db.Where("id = ?", ur.ID).First(ur).Error
 }
 
-func GetAllUserRoles() ([]UserRole, error) {
+func GetAllUserRoles(db *gorm.DB) ([]UserRole, error) {
 	var userRoles []UserRole
-	return userRoles, database.DB.Find(&userRoles).Error
+	return userRoles, db.Find(&userRoles).Error
 }
 
-func GetAllUserRolesByCID(cid uint) ([]UserRole, error) {
+func GetAllUserRolesByCID(db *gorm.DB, cid uint) ([]UserRole, error) {
 	var userRoles []UserRole
-	return userRoles, database.DB.Where("cid = ?", cid).Find(&userRoles).Error
+	return userRoles, db.Where("cid = ?", cid).Find(&userRoles).Error
 }
 
-func GetAllUserRolesByRoleID(roleID string) ([]UserRole, error) {
+func GetAllUserRolesByRoleID(db *gorm.DB, roleID string) ([]UserRole, error) {
 	var userRoles []UserRole
-	return userRoles, database.DB.Where("role_id = ?", roleID).Find(&userRoles).Error
+	return userRoles, db.Where("role_id = ?", roleID).Find(&userRoles).Error
 }
 
-func GetAllUserRolesByFacilityID(facilityID string) ([]UserRole, error) {
+func GetAllUserRolesByFacilityID(db *gorm.DB, facilityID string) ([]UserRole, error) {
 	var userRoles []UserRole
-	return userRoles, database.DB.Where("facility_id = ?", facilityID).Find(&userRoles).Error
+	return userRoles, db.Where("facility_id = ?", facilityID).Find(&userRoles).Error
 }
 
 type Role struct {
@@ -58,23 +58,23 @@ type Role struct {
 	UpdatedAt time.Time `json:"updated_at" example:"2021-01-01T00:00:00Z"`
 }
 
-func (r *Role) Create() error {
-	return database.DB.Create(r).Error
+func (r *Role) Create(db *gorm.DB) error {
+	return db.Create(r).Error
 }
 
-func (r *Role) Update() error {
-	return database.DB.Save(r).Error
+func (r *Role) Update(db *gorm.DB) error {
+	return db.Save(r).Error
 }
 
-func (r *Role) Delete() error {
-	return database.DB.Delete(r).Error
+func (r *Role) Delete(db *gorm.DB) error {
+	return db.Delete(r).Error
 }
 
-func (r *Role) Get() error {
-	return database.DB.Where("role = ?", r.Role).First(r).Error
+func (r *Role) Get(db *gorm.DB) error {
+	return db.Where("role = ?", r.Role).First(r).Error
 }
 
-func GetAllRoles() ([]Role, error) {
+func GetAllRoles(db *gorm.DB) ([]Role, error) {
 	var roles []Role
-	return roles, database.DB.Find(&roles).Error
+	return roles, db.Find(&roles).Error
 }

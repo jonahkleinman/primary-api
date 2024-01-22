@@ -10,8 +10,8 @@ import (
 func main() {
 	cfg := config.New()
 
-	database.Connect(cfg.Database)
-	models.AutoMigrate()
+	db := database.Connect(cfg.Database)
+	models.AutoMigrate(db)
 
 	// Create all the possible user roles
 	roles := []models.Role{
@@ -94,7 +94,7 @@ func main() {
 	}
 
 	for _, role := range roles {
-		if err := role.Create(); err != nil {
+		if err := role.Create(db); err != nil {
 			log.Fatalf("error creating role '%s' error: %v", role.Name, err)
 		}
 	}

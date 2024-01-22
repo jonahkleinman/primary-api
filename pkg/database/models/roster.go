@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/VATUSA/primary-api/pkg/database"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -20,33 +20,33 @@ type Roster struct {
 	DeletedAt  time.Time `json:"deleted_at" example:"2021-01-01T00:00:00Z"` // Soft Deletes for logging
 }
 
-func (r *Roster) Create() error {
-	return database.DB.Create(r).Error
+func (r *Roster) Create(db *gorm.DB) error {
+	return db.Create(r).Error
 }
 
-func (r *Roster) Update() error {
-	return database.DB.Save(r).Error
+func (r *Roster) Update(db *gorm.DB) error {
+	return db.Save(r).Error
 }
 
-func (r *Roster) Delete() error {
-	return database.DB.Delete(r).Error
+func (r *Roster) Delete(db *gorm.DB) error {
+	return db.Delete(r).Error
 }
 
-func (r *Roster) Get() error {
-	return database.DB.Where("id = ?", r.ID).First(r).Error
+func (r *Roster) Get(db *gorm.DB) error {
+	return db.Where("id = ?", r.ID).First(r).Error
 }
 
-func GetAllRosters() ([]Roster, error) {
+func GetAllRosters(db *gorm.DB) ([]Roster, error) {
 	var rosters []Roster
-	return rosters, database.DB.Find(&rosters).Error
+	return rosters, db.Find(&rosters).Error
 }
 
-func GetAllRostersByCID(cid uint) ([]Roster, error) {
+func GetAllRostersByCID(db *gorm.DB, cid uint) ([]Roster, error) {
 	var rosters []Roster
-	return rosters, database.DB.Where("cid = ?", cid).Find(&rosters).Error
+	return rosters, db.Where("cid = ?", cid).Find(&rosters).Error
 }
 
-func GetAllRostersByFacility(facility string) ([]Roster, error) {
+func GetAllRostersByFacility(db *gorm.DB, facility string) ([]Roster, error) {
 	var rosters []Roster
-	return rosters, database.DB.Where("facility = ?", facility).Find(&rosters).Error
+	return rosters, db.Where("facility = ?", facility).Find(&rosters).Error
 }

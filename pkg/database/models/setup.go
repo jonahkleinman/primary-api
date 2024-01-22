@@ -1,12 +1,12 @@
 package models
 
 import (
-	"github.com/VATUSA/primary-api/pkg/database"
+	"gorm.io/gorm"
 	"log"
 )
 
-func AutoMigrate() {
-	err := database.DB.AutoMigrate(
+func AutoMigrate(db *gorm.DB) {
+	err := db.AutoMigrate(
 		&Facility{},
 		&User{},
 		&ActionLogEntry{},
