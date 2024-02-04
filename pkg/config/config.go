@@ -3,8 +3,8 @@ package config
 import "os"
 
 type Config struct {
-	Database     *DatabaseConfig
-	CookieSecret string
+	Database *DatabaseConfig
+	Cors     *CorsConfig
 }
 
 type DatabaseConfig struct {
@@ -14,6 +14,10 @@ type DatabaseConfig struct {
 	Password    string
 	Database    string
 	LoggerLevel string
+}
+
+type CorsConfig struct {
+	AllowedOrigins string
 }
 
 func DBConfig() *DatabaseConfig {
@@ -27,8 +31,15 @@ func DBConfig() *DatabaseConfig {
 	}
 }
 
+func CORSConfig() *CorsConfig {
+	return &CorsConfig{
+		AllowedOrigins: os.Getenv("CORS_ALLOWED_ORIGINS"),
+	}
+}
+
 func New() *Config {
 	return &Config{
 		Database: DBConfig(),
+		Cors:     CORSConfig(),
 	}
 }
