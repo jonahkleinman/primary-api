@@ -125,16 +125,6 @@ func CreateDocument(w http.ResponseWriter, r *http.Request) {
 
 func GetDocument(w http.ResponseWriter, r *http.Request) {
 	doc := GetDocumentCtx(r)
-	if doc == nil {
-		http.Error(w, "Invalid request", http.StatusBadRequest)
-		return
-	}
-
-	if err := json.NewEncoder(w).Encode(NewDocumentResponse(doc)); err != nil {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-
 	render.Render(w, r, NewDocumentResponse(doc))
 }
 

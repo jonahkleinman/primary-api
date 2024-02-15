@@ -2,8 +2,10 @@ package disciplinary_log
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
+	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
 	"github.com/go-playground/validator/v10"
 	"net/http"
@@ -37,15 +39,15 @@ func NewDisciplinaryLogEntryResponse(dle *models.DisciplinaryLogEntry) *Response
 
 func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
 	if res.DisciplinaryLogEntry == nil {
-		return nil
+		return errors.New("disciplinary log entry not found")
 	}
 	return nil
 }
 
-func NewDisciplinaryLogEntryListResponse(dle []models.DisciplinaryLogEntry) []Response {
-	list := []Response{}
+func NewDisciplinaryLogEntryListResponse(dle []models.DisciplinaryLogEntry) []render.Renderer {
+	list := []render.Renderer{}
 	for _, d := range dle {
-		list = append(list, *NewDisciplinaryLogEntryResponse(&d))
+		list = append(list, NewDisciplinaryLogEntryResponse(&d))
 	}
 	return list
 }
@@ -53,12 +55,12 @@ func NewDisciplinaryLogEntryListResponse(dle []models.DisciplinaryLogEntry) []Re
 func CreateDisciplinaryLogEntry(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
-		http.Error(w, "Invalid request", http.StatusBadRequest)
+		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		http.Error(w, "Invalid request", http.StatusBadRequest)
+		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
@@ -75,37 +77,42 @@ func CreateDisciplinaryLogEntry(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := dle.Create(database.DB); err != nil {
-		http.Error(w, "Failed to create disciplinary log entry", http.StatusInternalServerError)
+		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	render.JSON(w, r, NewDisciplinaryLogEntryResponse(dle))
+	render.Status(r, http.StatusCreated)
+	render.Render(w, r, NewDisciplinaryLogEntryResponse(dle))
 }
 
 func GetDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	dle := GetDisciplinaryLogCtx(r)
-	render.JSON(w, r, NewDisciplinaryLogEntryResponse(dle))
+	render.Render(w, r, NewDisciplinaryLogEntryResponse(dle))
 }
 
 func ListDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	dle, err := models.GetAllDisciplinaryLogEntries(database.DB, true)
 	if err != nil {
-		http.Error(w, "Failed to fetch disciplinary log entries", http.StatusInternalServerError)
+		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
-	render.JSON(w, r, NewDisciplinaryLogEntryListResponse(dle))
+
+	if err := render.RenderList(w, r, NewDisciplinaryLogEntryListResponse(dle)); err != nil {
+		render.Render(w, r, utils.ErrInternalServer)
+		return
+	}
 }
 
 func UpdateDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	dle := GetDisciplinaryLogCtx(r)
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
-		http.Error(w, "Invalid request", http.StatusBadRequest)
+		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		http.Error(w, "Invalid request", http.StatusBadRequest)
+		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
@@ -116,18 +123,18 @@ func UpdateDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := dle.Update(database.DB); err != nil {
-		http.Error(w, "Failed to update disciplinary log entry", http.StatusInternalServerError)
+		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	render.JSON(w, r, NewDisciplinaryLogEntryResponse(dle))
+	render.Render(w, r, NewDisciplinaryLogEntryResponse(dle))
 }
 
 func PatchDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	dle := GetDisciplinaryLogCtx(r)
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
-		http.Error(w, "Invalid request", http.StatusBadRequest)
+		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
@@ -140,18 +147,19 @@ func PatchDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := dle.Update(database.DB); err != nil {
-		http.Error(w, "Failed to update disciplinary log entry", http.StatusInternalServerError)
+		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	render.JSON(w, r, NewDisciplinaryLogEntryResponse(dle))
+	render.Render(w, r, NewDisciplinaryLogEntryResponse(dle))
 }
 
 func DeleteDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	dle := GetDisciplinaryLogCtx(r)
 	if err := dle.Delete(database.DB); err != nil {
-		http.Error(w, "Failed to delete disciplinary log entry", http.StatusInternalServerError)
+		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
-	render.JSON(w, r, NewDisciplinaryLogEntryResponse(dle))
+
+	render.Status(r, http.StatusNoContent)
 }

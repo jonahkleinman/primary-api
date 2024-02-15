@@ -76,12 +76,12 @@ func CreateNews(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	render.Status(r, http.StatusCreated)
 	render.Render(w, r, NewNewsResponse(news))
 }
 
 func GetNews(w http.ResponseWriter, r *http.Request) {
 	news := GetNewsCtx(r)
-
 	render.Render(w, r, NewNewsResponse(news))
 }
 
@@ -159,7 +159,6 @@ func PatchNews(w http.ResponseWriter, r *http.Request) {
 
 func DeleteNews(w http.ResponseWriter, r *http.Request) {
 	news := GetNewsCtx(r)
-
 	if err := news.Delete(database.DB); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
