@@ -13,12 +13,18 @@ func Router(r chi.Router) {
 	r.Get("/", ListDocuments)
 	r.Post("/", CreateDocument)
 
-	r.Route("/{DocumentID}", func(r chi.Router) {
-		r.Use(Ctx)
-		r.Get("/", GetDocument)
-		r.Put("/", UpdateDocument)
-		r.Patch("/", PatchDocument)
-		r.Delete("/", DeleteDocument)
+	r.Route("/{Facility}", func(r chi.Router) {
+		r.Get("/", ListDocumentsByFac)
+		r.Route("/{Category}", func(r chi.Router) {
+			r.Get("/", ListDocumentsByFacByCat)
+			r.Route("/{DocumentID}", func(r chi.Router) {
+				r.Use(Ctx)
+				r.Get("/", GetDocument)
+				r.Put("/", UpdateDocument)
+				r.Patch("/", PatchDocument)
+				r.Delete("/", DeleteDocument)
+			})
+		})
 	})
 }
 
