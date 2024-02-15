@@ -9,7 +9,7 @@ func NewCors(cfg *config.Config) cors.Options {
 	return cors.Options{
 		AllowedOrigins:   []string{cfg.Cors.AllowedOrigins},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "x-guest", "x-user", "x-key"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "x-guest", "x-user", "x-api-key"},
 		AllowCredentials: false,
 		MaxAge:           300,
 	}

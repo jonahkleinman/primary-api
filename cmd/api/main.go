@@ -2,19 +2,25 @@ package main
 
 import (
 	"github.com/VATUSA/primary-api/pkg/config"
-	go_chi "github.com/VATUSA/primary-api/pkg/go-chi"
+	"github.com/VATUSA/primary-api/pkg/database"
+	"github.com/VATUSA/primary-api/pkg/database/models"
+	gochi "github.com/VATUSA/primary-api/pkg/go-chi"
+	"github.com/VATUSA/primary-api/pkg/storage"
 	"net/http"
 )
 
 func main() {
 	cfg := config.New()
 
-	//database.DB = database.Connect(cfg.Database)
-	//models.AutoMigrate(database.DB)
+	bucket, err := storage.NewS3Client(cfg.S3)
+	if err != nil {
+		panic(err)
+	}
 
-	r := go_chi.New(cfg)
+	storage.PublicBucket = bucket
+	database.DB = database.Connect(cfg.Database)
+	models.AutoMigrate(database.DB)
 
-	go_chi.Testers(r)
-
+	r := gochi.New(cfg)
 	http.ListenAndServe(":8080", r)
 }

@@ -1,49 +1,31 @@
 package news
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
+	"github.com/go-playground/validator/v10"
 	"net/http"
-	"strings"
 )
 
-// TODO - Add UpdatedByCID functionality
-
 type Request struct {
-	*models.News
+	Facility    string `json:"facility" example:"ZDV" validate:"required"`
+	Title       string `json:"title" example:"DP001 Revision 3 Released" validate:"required"`
+	Description string `json:"description" example:"DP001 has been revised to include new information regarding the new VATSIM Code of Conduct" validate:"required"`
+}
+
+func (req *Request) Validate() error {
+	return validator.New().Struct(req)
 }
 
 func (req *Request) Bind(r *http.Request) error {
-	if req.News == nil {
-		return errors.New("missing required News fields")
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(req); err != nil {
+		return err
 	}
-
-	missingFields := []string{}
-	if req.Facility == "" {
-		missingFields = append(missingFields, "facility")
-	}
-	if req.Title == "" {
-		missingFields = append(missingFields, "title")
-	}
-	if req.Description == "" {
-		missingFields = append(missingFields, "description")
-	}
-
-	if len(missingFields) > 0 {
-		return errors.New("missing required fields: " + strings.Join(missingFields, ", "))
-	}
-
-	return nil
-}
-
-func (req *Request) BindPartial(r *http.Request) error {
-	if req.News == nil {
-		return errors.New("missing required News fields")
-	}
-
 	return nil
 }
 
@@ -52,12 +34,13 @@ type Response struct {
 }
 
 func NewNewsResponse(news *models.News) *Response {
-	resp := &Response{News: news}
-
-	return resp
+	return &Response{News: news}
 }
 
 func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
+	if res.News == nil {
+		return errors.New("missing required news")
+	}
 	return nil
 }
 
@@ -76,18 +59,28 @@ func CreateNews(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	news := data.News
+	if err := data.Validate(); err != nil {
+		render.Render(w, r, utils.ErrInvalidRequest(err))
+		return
+	}
+
+	news := &models.News{
+		Facility:    data.Facility,
+		Title:       data.Title,
+		Description: data.Description,
+		CreatedBy:   "System",
+	}
+
 	if err := news.Create(database.DB); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	render.Status(r, http.StatusCreated)
 	render.Render(w, r, NewNewsResponse(news))
 }
 
 func GetNews(w http.ResponseWriter, r *http.Request) {
-	news := r.Context().Value("news").(*models.News)
+	news := GetNewsCtx(r)
 
 	render.Render(w, r, NewNewsResponse(news))
 }
@@ -106,40 +99,25 @@ func ListNews(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateNews(w http.ResponseWriter, r *http.Request) {
-	news := r.Context().Value("news").(*models.News)
+	news := GetNewsCtx(r)
 
-	data := &Request{News: news}
-	if err := render.Bind(r, data); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
-		return
-	}
-	news = data.News
-	if err := news.Update(database.DB); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
-		return
-	}
-
-	render.Render(w, r, NewNewsResponse(news))
-}
-
-func PatchUser(w http.ResponseWriter, r *http.Request) {
-	news := r.Context().Value("news").(*models.News)
-
-	data := &Request{News: news}
-	if err := render.Bind(r, data); err != nil {
+	req := &Request{}
+	if err := render.Bind(r, req); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
-	if data.Facility != "" {
-		news.Facility = data.Facility
+	if err := req.Validate(); err != nil {
+		render.Render(w, r, utils.ErrInvalidRequest(err))
+		return
 	}
-	if data.Title != "" {
-		news.Title = data.Title
-	}
-	if data.Description != "" {
-		news.Description = data.Description
-	}
+
+	news.Facility = req.Facility
+	news.Title = req.Title
+	news.Description = req.Description
+
+	// 1 is the vatusa user
+	news.UpdatedByCID = 1
 
 	if err := news.Update(database.DB); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
@@ -150,14 +128,27 @@ func PatchUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func PatchNews(w http.ResponseWriter, r *http.Request) {
-	news := r.Context().Value("news").(*models.News)
+	news := GetNewsCtx(r)
 
-	data := &Request{News: news}
-	if err := render.Bind(r, data); err != nil {
+	req := &Request{}
+	if err := render.Bind(r, req); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
-	news = data.News
+
+	if req.Facility != "" {
+		news.Facility = req.Facility
+	}
+	if req.Title != "" {
+		news.Title = req.Title
+	}
+	if req.Description != "" {
+		news.Description = req.Description
+	}
+
+	// 1 is the vatusa user
+	news.UpdatedByCID = 1
+
 	if err := news.Update(database.DB); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
@@ -167,7 +158,7 @@ func PatchNews(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteNews(w http.ResponseWriter, r *http.Request) {
-	news := r.Context().Value("news").(*models.News)
+	news := GetNewsCtx(r)
 
 	if err := news.Delete(database.DB); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)

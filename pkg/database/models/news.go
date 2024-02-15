@@ -11,7 +11,7 @@ type News struct {
 	Title        string    `json:"news" example:"DP001 Revision 3 Released"`
 	Description  string    `json:"answer" example:"DP001 has been revised to include new information regarding the new VATSIM Code of Conduct"`
 	CreatedAt    time.Time `json:"created_at" example:"2021-01-01T00:00:00Z"`
-	CreatedByCID uint      `json:"created_by_cid" example:"1293257"`
+	CreatedBy    string    `json:"created_by_cid" example:"'1293257' or 'System'"`
 	UpdatedAt    time.Time `json:"updated_at" example:"2021-01-01T00:00:00Z"`
 	UpdatedByCID uint      `json:"updated_by_cid" example:"1293257"`
 }

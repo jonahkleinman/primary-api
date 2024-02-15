@@ -3,11 +3,12 @@ package config
 import "os"
 
 type Config struct {
-	Database *DatabaseConfig
+	Database *DBConfig
 	Cors     *CorsConfig
+	S3       *S3Config
 }
 
-type DatabaseConfig struct {
+type DBConfig struct {
 	Host        string
 	Port        string
 	User        string
@@ -20,8 +21,16 @@ type CorsConfig struct {
 	AllowedOrigins string
 }
 
-func DBConfig() *DatabaseConfig {
-	return &DatabaseConfig{
+type S3Config struct {
+	Endpoint  string
+	Region    string
+	AccessKey string
+	SecretKey string
+	Bucket    string
+}
+
+func NewDBConfig() *DBConfig {
+	return &DBConfig{
 		Host:        os.Getenv("DB_HOST"),
 		Port:        os.Getenv("DB_PORT"),
 		User:        os.Getenv("DB_USER"),
@@ -31,15 +40,26 @@ func DBConfig() *DatabaseConfig {
 	}
 }
 
-func CORSConfig() *CorsConfig {
+func NewCorsConfig() *CorsConfig {
 	return &CorsConfig{
 		AllowedOrigins: os.Getenv("CORS_ALLOWED_ORIGINS"),
 	}
 }
 
+func NewS3Config() *S3Config {
+	return &S3Config{
+		Endpoint:  os.Getenv("S3_ENDPOINT"),
+		Region:    os.Getenv("S3_REGION"),
+		AccessKey: os.Getenv("S3_ACCESS_KEY"),
+		SecretKey: os.Getenv("S3_SECRET_KEY"),
+		Bucket:    os.Getenv("S3_BUCKET"),
+	}
+}
+
 func New() *Config {
 	return &Config{
-		Database: DBConfig(),
-		Cors:     CORSConfig(),
+		Database: NewDBConfig(),
+		Cors:     NewCorsConfig(),
+		S3:       NewS3Config(),
 	}
 }

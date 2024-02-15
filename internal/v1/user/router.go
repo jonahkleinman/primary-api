@@ -14,7 +14,6 @@ import (
 func Router(r chi.Router) {
 	r.Get("/", ListUsers)
 	r.Post("/", CreateUser)
-	//r.Get("/search", SearchUsers)
 
 	r.Route("/{CID}", func(r chi.Router) {
 		r.Use(Ctx)
@@ -27,8 +26,6 @@ func Router(r chi.Router) {
 func Ctx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		cid := chi.URLParam(r, "CID")
-		// TODO - if "" then check for x-user header
-		// TODO - Check Authentication here
 		if cid == "" {
 			render.Render(w, r, utils.ErrNotFound)
 			return
@@ -50,4 +47,8 @@ func Ctx(next http.Handler) http.Handler {
 		ctx := context.WithValue(r.Context(), "user", user)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
+}
+
+func GetUserCtx(r *http.Request) *models.User {
+	return r.Context().Value("user").(*models.User)
 }

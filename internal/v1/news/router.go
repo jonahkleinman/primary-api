@@ -19,6 +19,7 @@ func Router(r chi.Router) {
 		r.Use(Ctx)
 		r.Get("/", GetNews)
 		r.Put("/", UpdateNews)
+		r.Patch("/", PatchNews)
 		r.Delete("/", DeleteNews)
 	})
 }
@@ -46,4 +47,8 @@ func Ctx(next http.Handler) http.Handler {
 		ctx := context.WithValue(r.Context(), "news", news)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
+}
+
+func GetNewsCtx(r *http.Request) *models.News {
+	return r.Context().Value("news").(*models.News)
 }

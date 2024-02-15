@@ -3,3 +3,5 @@
 
 /cmd/api/main_local.go
 /cmd/database/bootstrap_local.go
+
+*/*_local.go
