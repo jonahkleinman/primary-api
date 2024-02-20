@@ -11,7 +11,7 @@ type RatingChange struct {
 	OldRating    uint      `json:"old_rating" example:"1"`
 	NewRating    uint      `json:"new_rating" example:"2"`
 	CreatedAt    time.Time `json:"created_at" example:"2021-01-01T00:00:00Z"`
-	CreatedByCID uint      `json:"created_by_cid" example:"1293257"`
+	CreatedByCID string    `json:"created_by_cid" example:"1293257"`
 	UpdatedAt    time.Time `json:"updated_at" example:"2021-01-01T00:00:00Z"`
 }
 

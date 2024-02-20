@@ -1,8 +1,6 @@
 package go_chi
 
 import (
-	"github.com/VATUSA/primary-api/internal/v1/news"
-	"github.com/VATUSA/primary-api/internal/v1/user"
 	"github.com/VATUSA/primary-api/pkg/config"
 	middleware2 "github.com/VATUSA/primary-api/pkg/middleware"
 	"github.com/go-chi/chi/v5"
@@ -24,16 +22,6 @@ func New(cfg *config.Config) *chi.Mux {
 	r.Use(cors.Handler(NewCors(cfg)))
 
 	Testers(r)
-
-	r.Route("/internal/v1", func(r chi.Router) {
-		r.Route("/user", func(r chi.Router) {
-			user.Router(r)
-		})
-
-		r.Route("/news", func(r chi.Router) {
-			news.Router(r)
-		})
-	})
 
 	return r
 }

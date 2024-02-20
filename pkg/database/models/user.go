@@ -19,12 +19,12 @@ type User struct {
 	DiscordID            string                 `json:"discord_id" example:"1234567890"`
 	LastLogin            time.Time              `json:"last_login" example:"2021-01-01T00:00:00Z"`
 	LastCertSync         time.Time              `json:"last_cert_sync" example:"2021-01-01T00:00:00Z"`
-	Flags                []Flag                 `json:"flags" gorm:"foreignKey:CID"`
+	Flags                []UserFlag             `json:"flags" gorm:"foreignKey:CID"`
 	Roles                []UserRole             `json:"roles" gorm:"foreignKey:CID"`
 	RatingChanges        []RatingChange         `json:"-" gorm:"foreignKey:CID"`
 	RosterRequest        []RosterRequest        `json:"-" gorm:"foreignKey:CID"`
 	Roster               []Roster               `json:"-" gorm:"foreignKey:CID"`
-	Notifications        []Notifications        `json:"-" gorm:"foreignKey:CID"`
+	Notifications        []Notification         `json:"-" gorm:"foreignKey:CID"`
 	Feedback             []Feedback             `json:"-" gorm:"foreignKey:ControllerCID"`
 	ActionLogEntry       []ActionLogEntry       `json:"-" gorm:"foreignKey:CID"`
 	DisciplinaryLogEntry []DisciplinaryLogEntry `json:"-" gorm:"foreignKey:CID"`

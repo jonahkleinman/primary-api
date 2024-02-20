@@ -16,11 +16,11 @@ func AutoMigrate(db *gorm.DB) {
 		&FAQ{},
 		&Feedback{},
 		&News{},
-		&Notifications{},
+		&Notification{},
 		&RatingChange{},
 		&Roster{},
 		&RosterRequest{},
-		&Flag{},
+		&UserFlag{},
 		&UserRole{},
 		&Role{},
 	)

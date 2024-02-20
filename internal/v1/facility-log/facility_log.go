@@ -87,7 +87,7 @@ func ListFacilityLog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := render.RenderList(w, r, NewFacilityLogEntryListResponse(fle)); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		render.Render(w, r, utils.ErrRender(err))
 		return
 	}
 }

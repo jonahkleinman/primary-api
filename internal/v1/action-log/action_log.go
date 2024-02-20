@@ -90,7 +90,10 @@ func ListActionLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.RenderList(w, r, NewActionLogEntryListResponse(ale))
+	if err := render.RenderList(w, r, NewActionLogEntryListResponse(ale)); err != nil {
+		render.Render(w, r, utils.ErrRender(err))
+		return
+	}
 }
 
 func UpdateActionLog(w http.ResponseWriter, r *http.Request) {

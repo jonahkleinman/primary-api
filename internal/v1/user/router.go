@@ -19,6 +19,7 @@ func Router(r chi.Router) {
 		r.Use(Ctx)
 		r.Get("/", GetUser)
 		r.Put("/", UpdateUser)
+		r.Patch("/", PatchUser)
 		r.Delete("/", DeleteUser)
 	})
 }

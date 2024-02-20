@@ -7,7 +7,7 @@ import (
 
 // Expire Time can be the time of the session, or the time of the event
 
-type Notifications struct {
+type Notification struct {
 	ID        uint      `json:"id" gorm:"primaryKey" example:"1"`
 	CID       uint      `json:"cid" example:"1293257"`
 	Category  string    `json:"category" example:"Training"`
@@ -18,28 +18,28 @@ type Notifications struct {
 	UpdatedAt time.Time `json:"updated_at" example:"2021-01-01T00:00:00Z"`
 }
 
-func (n *Notifications) Create(db *gorm.DB) error {
+func (n *Notification) Create(db *gorm.DB) error {
 	return db.Create(n).Error
 }
 
-func (n *Notifications) Update(db *gorm.DB) error {
+func (n *Notification) Update(db *gorm.DB) error {
 	return db.Save(n).Error
 }
 
-func (n *Notifications) Delete(db *gorm.DB) error {
+func (n *Notification) Delete(db *gorm.DB) error {
 	return db.Delete(n).Error
 }
 
-func (n *Notifications) Get(db *gorm.DB) error {
+func (n *Notification) Get(db *gorm.DB) error {
 	return db.Where("id = ?", n.ID).First(n).Error
 }
 
-func GetAllNotifications(db *gorm.DB) ([]Notifications, error) {
-	var notifications []Notifications
+func GetAllNotifications(db *gorm.DB) ([]Notification, error) {
+	var notifications []Notification
 	return notifications, db.Find(&notifications).Error
 }
 
-func GetAllActiveNotificationsByCID(db *gorm.DB, cid uint) ([]Notifications, error) {
-	var notifications []Notifications
+func GetAllActiveNotificationsByCID(db *gorm.DB, cid uint) ([]Notification, error) {
+	var notifications []Notification
 	return notifications, db.Where("cid = ? AND expire_at > ?", cid, time.Now()).Find(&notifications).Error
 }

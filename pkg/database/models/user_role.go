@@ -74,6 +74,11 @@ func (r *Role) Get(db *gorm.DB) error {
 	return db.Where("role = ?", r.Role).First(r).Error
 }
 
+func IsValidRole(db *gorm.DB, role string) bool {
+	var r Role
+	return db.Where("role = ?", role).First(&r).Error == nil
+}
+
 func GetAllRoles(db *gorm.DB) ([]Role, error) {
 	var roles []Role
 	return roles, db.Find(&roles).Error

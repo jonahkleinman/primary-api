@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/VATUSA/primary-api/internal"
 	"github.com/VATUSA/primary-api/pkg/config"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
@@ -22,5 +23,6 @@ func main() {
 	models.AutoMigrate(database.DB)
 
 	r := gochi.New(cfg)
+	internal.Router(r)
 	http.ListenAndServe(":8080", r)
 }

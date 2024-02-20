@@ -136,7 +136,7 @@ func ListDocuments(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := render.RenderList(w, r, NewDocumentListResponse(docs)); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		render.Render(w, r, utils.ErrRender(err))
 		return
 	}
 }

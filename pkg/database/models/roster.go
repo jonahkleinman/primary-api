@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"gorm.io/gorm"
 	"time"
 )
@@ -21,6 +22,28 @@ type Roster struct {
 }
 
 func (r *Roster) Create(db *gorm.DB) error {
+	// Check and see if user is already on the roster\
+	if err := db.Where("cid = ? AND facility = ?", r.CID, r.Facility).First(&User{}).Error; err == nil {
+		return errors.New("user already exists on facility roster")
+	}
+
+	user := &User{CID: r.CID}
+	if err := user.Get(db); err != nil {
+		return errors.New("user not found")
+	}
+
+	// See if preferred OIs are already taken
+	if err := db.Where("ois = ? AND facility = ?", user.PreferredOIs, r.Facility).First(&User{}).Error; err == nil {
+		// OIs are taken so try first and last initial
+		if err := db.Where("ois = ? AND facility = ?", user.FirstName[:1]+user.LastName[:1], r.Facility).First(&User{}).Error; err == nil {
+			// First and last initial are taken so just use first available OIs
+			return db.Create(r).Error
+		}
+		r.OIs = user.FirstName[:1] + user.LastName[:1]
+		return db.Create(r).Error
+	}
+
+	r.OIs = user.PreferredOIs
 	return db.Create(r).Error
 }
 
