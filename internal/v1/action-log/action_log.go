@@ -50,6 +50,17 @@ func NewActionLogEntryListResponse(ale []models.ActionLogEntry) []render.Rendere
 	return list
 }
 
+// CreateActionLogEntry godoc
+// @Summary Create a new action log entry
+// @Description Create a new action log entry
+// @Tags action_log
+// @Accept  json
+// @Produce  json
+// @Param action_log body Request true "Action Log Entry"
+// @Success 201 {object} Response
+// @Failure 400 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /action_log [post]
 func CreateActionLogEntry(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {

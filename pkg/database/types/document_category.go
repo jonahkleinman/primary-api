@@ -1,7 +1,6 @@
 package types
 
 import (
-	"database/sql/driver"
 	"errors"
 )
 
@@ -26,6 +25,6 @@ func (s *DocumentCategory) Scan(value interface{}) error {
 	return nil
 }
 
-func (s *DocumentCategory) Value() (driver.Value, error) {
+func (s *DocumentCategory) Value() (interface{}, error) {
 	return string(*s), nil
 }

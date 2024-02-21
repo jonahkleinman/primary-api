@@ -1,0 +1,21 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "VATUSAs internal API for use by other internal VATUSA services.",
+        "title": "VATUSA Internal",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "VATUSA Support",
+            "url": "http://www.swagger.io/support",
+            "email": "vatusa6@vatusa.net"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "0.1"
+    },
+    "host": "localhost:8080",
+    "basePath": "/internal/v1",
+    "paths": {}
+}
