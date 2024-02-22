@@ -17,5 +17,207 @@
     },
     "host": "localhost:8080",
     "basePath": "/internal/v1",
-    "paths": {}
+    "paths": {
+        "/action_log": {
+            "get": {
+                "description": "List all action log entries",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "action_log"
+                ],
+                "summary": "List all action log entries",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/action_log.Response"
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new action log entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "action_log"
+                ],
+                "summary": "Create a new action log entry",
+                "parameters": [
+                    {
+                        "description": "Action Log Entry",
+                        "name": "action_log",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/action_log.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/action_log.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/action_log/{id}": {
+            "get": {
+                "description": "Get an action log entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "action_log"
+                ],
+                "summary": "Get an action log entry",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Action Log Entry ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/action_log.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "action_log.Request": {
+            "type": "object",
+            "required": [
+                "cid",
+                "entry"
+            ],
+            "properties": {
+                "cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "entry": {
+                    "type": "string",
+                    "example": "Changed Preferred OIs to RP"
+                }
+            }
+        },
+        "action_log.Response": {
+            "type": "object",
+            "properties": {
+                "cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "created_by": {
+                    "type": "string",
+                    "example": "'1234567' or 'System'"
+                },
+                "entry": {
+                    "type": "string",
+                    "example": "Changed Preferred OIs to RP"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "updated_by": {
+                    "type": "string",
+                    "example": "'1234567' or 'System'"
+                }
+            }
+        },
+        "utils.ErrResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "application-specific error code",
+                    "type": "integer"
+                },
+                "error": {
+                    "description": "application-level error message, for debugging",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "user-level status message",
+                    "type": "string"
+                }
+            }
+        }
+    }
 }

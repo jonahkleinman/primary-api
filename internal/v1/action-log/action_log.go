@@ -53,8 +53,8 @@ func NewActionLogEntryListResponse(ale []models.ActionLogEntry) []render.Rendere
 // @Produce  json
 // @Param action_log body Request true "Action Log Entry"
 // @Success 201 {object} Response
-// @Failure 400 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
 // @Router /action_log [post]
 func CreateActionLogEntry(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
@@ -88,12 +88,34 @@ func CreateActionLogEntry(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewActionLogEntryResponse(ale))
 }
 
+// GetActionLog godoc
+// @Summary Get an action log entry
+// @Description Get an action log entry
+// @Tags action_log
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Action Log Entry ID"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /action_log/{id} [get]
 func GetActionLog(w http.ResponseWriter, r *http.Request) {
 	ale := GetActionLogCtx(r)
 
 	render.Render(w, r, NewActionLogEntryResponse(ale))
 }
 
+// ListActionLog godoc
+// @Summary List all action log entries
+// @Description List all action log entries
+// @Tags action_log
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} []Response
+// @Failure 429 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /action_log [get]
 func ListActionLog(w http.ResponseWriter, r *http.Request) {
 	ale, err := models.GetAllActionLogEntries(database.DB)
 	if err != nil {
