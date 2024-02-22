@@ -1,7 +1,6 @@
 package document
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/VATUSA/primary-api/pkg/database"
@@ -18,7 +17,7 @@ import (
 )
 
 type Request struct {
-	Facility    string `json:"facility" example:"ZDV" validate:"required"`
+	Facility    string `json:"facility" example:"ZDV" validate:"required,len=3"`
 	Name        string `json:"name" example:"DP001" validate:"required"`
 	Description string `json:"description" example:"General Division Policy" validate:"required"`
 	Category    string `json:"category" example:"general" validate:"required,oneof=general training information_technology sops loas misc"`
@@ -29,10 +28,6 @@ func (req *Request) Validate() error {
 }
 
 func (req *Request) Bind(r *http.Request) error {
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(req); err != nil {
-		return err
-	}
 	return nil
 }
 

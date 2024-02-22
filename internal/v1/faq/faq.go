@@ -10,7 +10,7 @@ import (
 )
 
 type Request struct {
-	Facility string `json:"facility" validate:"required"`
+	Facility string `json:"facility" validate:"required,len=3"`
 	Question string `json:"question" validate:"required"`
 	Answer   string `json:"answer" validate:"required"`
 	Category string `json:"category" validate:"required,oneof=membership training technology misc"`
@@ -56,6 +56,11 @@ func CreateFAQ(w http.ResponseWriter, r *http.Request) {
 
 	if err := data.Validate(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
+		return
+	}
+
+	if !models.IsValidFacility(database.DB, data.Facility) {
+		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
 
@@ -110,6 +115,11 @@ func UpdateFAQ(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !models.IsValidFacility(database.DB, data.Facility) {
+		render.Render(w, r, utils.ErrInvalidFacility)
+		return
+	}
+
 	faq.Facility = data.Facility
 	faq.Question = data.Question
 	faq.Answer = data.Answer
@@ -133,6 +143,10 @@ func PatchFAQ(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if data.Facility != "" {
+		if !models.IsValidFacility(database.DB, data.Facility) {
+			render.Render(w, r, utils.ErrInvalidFacility)
+			return
+		}
 		faq.Facility = data.Facility
 	}
 	if data.Question != "" {

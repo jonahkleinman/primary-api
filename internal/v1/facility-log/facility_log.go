@@ -11,7 +11,7 @@ import (
 )
 
 type Request struct {
-	Facility string `json:"facility" example:"ZDV" validate:"required"`
+	Facility string `json:"facility" example:"ZDV" validate:"required,len=3"`
 	Entry    string `json:"entry" example:"Changed Preferred OIs to RP" validate:"required"`
 }
 
@@ -55,6 +55,11 @@ func CreateFacilityLogEntry(w http.ResponseWriter, r *http.Request) {
 
 	if err := data.Validate(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
+		return
+	}
+
+	if !models.IsValidFacility(database.DB, data.Facility) {
+		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
 
@@ -106,6 +111,11 @@ func UpdateFacilityLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !models.IsValidFacility(database.DB, data.Facility) {
+		render.Render(w, r, utils.ErrInvalidFacility)
+		return
+	}
+
 	fle.Facility = data.Facility
 	fle.Entry = data.Entry
 
@@ -127,6 +137,10 @@ func PatchFacilityLog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if data.Facility != "" {
+		if !models.IsValidFacility(database.DB, data.Facility) {
+			render.Render(w, r, utils.ErrInvalidFacility)
+			return
+		}
 		fle.Facility = data.Facility
 	}
 	if data.Entry != "" {

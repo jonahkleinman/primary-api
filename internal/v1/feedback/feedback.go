@@ -1,7 +1,6 @@
 package feedback
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
@@ -17,7 +16,7 @@ type Request struct {
 	Callsign      string               `json:"callsign" example:"DAL123" validate:"required"`
 	ControllerCID uint                 `json:"controller_cid" example:"1293257" validate:"required"`
 	Position      string               `json:"position" example:"DEN_I_APP" validate:"required"`
-	Facility      string               `json:"facility" example:"ZDV" validate:"required"`
+	Facility      string               `json:"facility" example:"ZDV" validate:"required,len=3"`
 	Rating        types.FeedbackRating `json:"rating" example:"good" validate:"required,oneof=unsatisfactory poor fair good excellent"`
 	Notes         string               `json:"notes" example:"Raaj was the best controller I've ever flown under." validate:"required"`
 	Status        types.StatusType     `json:"status" example:"pending" validate:"required,oneof=pending approved denied"`
@@ -29,10 +28,6 @@ func (req *Request) Validate() error {
 }
 
 func (req *Request) Bind(r *http.Request) error {
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(req); err != nil {
-		return err
-	}
 	return nil
 }
 
@@ -68,6 +63,16 @@ func CreateFeedback(w http.ResponseWriter, r *http.Request) {
 
 	if err := data.Validate(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
+		return
+	}
+
+	if !models.IsValidUser(database.DB, data.ControllerCID) {
+		render.Render(w, r, utils.ErrInvalidCID)
+		return
+	}
+
+	if !models.IsValidFacility(database.DB, data.Facility) {
+		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
 
@@ -121,6 +126,16 @@ func UpdateFeedback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !models.IsValidUser(database.DB, data.ControllerCID) {
+		render.Render(w, r, utils.ErrInvalidCID)
+		return
+	}
+
+	if !models.IsValidFacility(database.DB, data.Facility) {
+		render.Render(w, r, utils.ErrInvalidFacility)
+		return
+	}
+
 	f := GetFeedbackCtx(r)
 	f.PilotCID = data.PilotCID
 	f.Callsign = data.Callsign
@@ -155,12 +170,20 @@ func PatchFeedback(w http.ResponseWriter, r *http.Request) {
 		f.Callsign = data.Callsign
 	}
 	if data.ControllerCID != 0 {
+		if !models.IsValidUser(database.DB, data.ControllerCID) {
+			render.Render(w, r, utils.ErrInvalidCID)
+			return
+		}
 		f.ControllerCID = data.ControllerCID
 	}
 	if data.Position != "" {
 		f.Position = data.Position
 	}
 	if data.Facility != "" {
+		if !models.IsValidFacility(database.DB, data.Facility) {
+			render.Render(w, r, utils.ErrInvalidFacility)
+			return
+		}
 		f.Facility = data.Facility
 	}
 	if data.Rating != "" {
