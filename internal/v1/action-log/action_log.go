@@ -1,7 +1,6 @@
 package action_log
 
 import (
-	"encoding/json"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
@@ -20,10 +19,6 @@ func (req *Request) Validate() error {
 }
 
 func (req *Request) Bind(r *http.Request) error {
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(req); err != nil {
-		return err
-	}
 	return nil
 }
 
@@ -70,6 +65,11 @@ func CreateActionLogEntry(w http.ResponseWriter, r *http.Request) {
 
 	if err := data.Validate(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
+		return
+	}
+
+	if !models.IsValidUser(database.DB, data.CID) {
+		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
@@ -121,6 +121,11 @@ func UpdateActionLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !models.IsValidUser(database.DB, data.CID) {
+		render.Render(w, r, utils.ErrInvalidCID)
+		return
+	}
+
 	ale.CID = data.CID
 	ale.Entry = data.Entry
 	ale.UpdatedBy = "System"
@@ -143,6 +148,10 @@ func PatchActionLog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if data.CID != 0 {
+		if !models.IsValidUser(database.DB, data.CID) {
+			render.Render(w, r, utils.ErrInvalidCID)
+			return
+		}
 		ale.CID = data.CID
 	}
 	if data.Entry != "" {

@@ -79,3 +79,11 @@ func SearchUsersByName(db *gorm.DB, query string) ([]User, error) {
 
 	return users, nil
 }
+
+func IsValidUser(db *gorm.DB, cid uint) bool {
+	var user User
+	if err := db.Where("c_id = ?", cid).First(&user).Error; err != nil {
+		return false
+	}
+	return true
+}

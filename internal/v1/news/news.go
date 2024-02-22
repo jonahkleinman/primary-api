@@ -62,7 +62,7 @@ func CreateNews(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !models.IsValidFacility(database.DB, data.Facility) {
-		render.Render(w, r, utils.ErrInvalidRequest(errors.New("invalid facility")))
+		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
 
