@@ -59,7 +59,7 @@ func NewDocumentListResponse(d []models.Document) []render.Renderer {
 	return list
 }
 
-func CreateDocument(w http.ResponseWriter, r *http.Request) {
+func CreateDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
@@ -106,7 +106,7 @@ func CreateDocument(w http.ResponseWriter, r *http.Request) {
 		Name:        data.Name,
 		Description: data.Description,
 		Category:    types.DocumentCategory(data.Category),
-		URL:         path.Join("https://cdn.vatusa.local", directory, filename),
+		URL:         path.Join(endpoint, directory, filename),
 	}
 
 	if err := document.Create(database.DB); err != nil {
@@ -260,4 +260,43 @@ func DeleteDocument(w http.ResponseWriter, r *http.Request) {
 
 	render.Status(r, http.StatusNoContent)
 
+}
+
+func UploadDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
+	data := GetDocumentCtx(r)
+
+	// Delete the file from the S3 bucket
+	directory := path.Join(data.Facility, string(data.Category))
+	filename := strings.ReplaceAll(data.Name, " ", "-") + path.Ext(data.URL)
+	if err := storage.PublicBucket.Delete(directory, filename); err != nil {
+		render.Render(w, r, utils.ErrInternalServer)
+		return
+
+	}
+
+	// Read the file from the request
+	file, fileHeader, err := r.FormFile("file")
+	if err != nil {
+		http.Error(w, "Error reading file", http.StatusBadRequest)
+		return
+	}
+
+	extension := path.Ext(fileHeader.Filename)
+	directory = path.Join(data.Facility, string(data.Category))
+	filename = strings.ReplaceAll(data.Name, " ", "-") + extension
+
+	// Put the file in the S3 bucket
+	if err := storage.PublicBucket.Upload(directory, filename, file); err != nil {
+		render.Render(w, r, utils.ErrInternalServer)
+		return
+	}
+
+	// Update the URL in the database
+	data.URL = path.Join(endpoint, directory, filename)
+	if err := data.Update(database.DB); err != nil {
+		render.Render(w, r, utils.ErrInternalServer)
+		return
+	}
+
+	render.Status(r, http.StatusNoContent)
 }

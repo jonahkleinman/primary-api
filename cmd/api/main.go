@@ -23,6 +23,6 @@ func main() {
 	models.AutoMigrate(database.DB)
 
 	r := gochi.New(cfg)
-	internal.Router(r)
+	internal.Router(r, cfg)
 	http.ListenAndServe(":8080", r)
 }

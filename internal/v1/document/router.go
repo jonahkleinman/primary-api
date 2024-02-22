@@ -2,6 +2,7 @@ package document
 
 import (
 	"context"
+	"github.com/VATUSA/primary-api/pkg/config"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/go-chi/chi/v5"
@@ -9,9 +10,11 @@ import (
 	"strconv"
 )
 
-func Router(r chi.Router) {
+func Router(r chi.Router, cfg *config.S3Config) {
 	r.Get("/", ListDocuments)
-	r.Post("/", CreateDocument)
+	r.Post("/", func(w http.ResponseWriter, r *http.Request) {
+		CreateDocument(w, r, cfg.Endpoint)
+	})
 
 	r.Route("/{Facility}", func(r chi.Router) {
 		r.Get("/", ListDocumentsByFac)
@@ -21,6 +24,9 @@ func Router(r chi.Router) {
 				r.Use(Ctx)
 				r.Get("/", GetDocument)
 				r.Put("/", UpdateDocument)
+				r.Put("/upload", func(w http.ResponseWriter, r *http.Request) {
+					UploadDocument(w, r, cfg.Endpoint)
+				})
 				r.Patch("/", PatchDocument)
 				r.Delete("/", DeleteDocument)
 			})

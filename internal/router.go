@@ -2,6 +2,7 @@ package internal
 
 import (
 	v1 "github.com/VATUSA/primary-api/internal/v1"
+	"github.com/VATUSA/primary-api/pkg/config"
 	"github.com/go-chi/chi/v5"
 	httpSwagger "github.com/swaggo/http-swagger"
 
@@ -23,9 +24,9 @@ import (
 // @host      localhost:8080
 // @BasePath  /internal/v1
 
-func Router(r chi.Router) {
+func Router(r chi.Router, cfg *config.Config) {
 	r.Route("/internal", func(r chi.Router) {
-		v1.Router(r)
+		v1.Router(r, cfg)
 	})
 
 	r.Get("/swagger/*", httpSwagger.Handler(

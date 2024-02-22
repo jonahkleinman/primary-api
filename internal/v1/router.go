@@ -5,6 +5,7 @@ import (
 	disciplinary_log "github.com/VATUSA/primary-api/internal/v1/disciplinary-log"
 	"github.com/VATUSA/primary-api/internal/v1/document"
 	facility_log "github.com/VATUSA/primary-api/internal/v1/facility-log"
+	"github.com/VATUSA/primary-api/internal/v1/faq"
 	"github.com/VATUSA/primary-api/internal/v1/feedback"
 	"github.com/VATUSA/primary-api/internal/v1/news"
 	"github.com/VATUSA/primary-api/internal/v1/notification"
@@ -14,10 +15,11 @@ import (
 	"github.com/VATUSA/primary-api/internal/v1/user"
 	user_flag "github.com/VATUSA/primary-api/internal/v1/user-flag"
 	user_role "github.com/VATUSA/primary-api/internal/v1/user-role"
+	"github.com/VATUSA/primary-api/pkg/config"
 	"github.com/go-chi/chi/v5"
 )
 
-func Router(r chi.Router) {
+func Router(r chi.Router, cfg *config.Config) {
 	r.Route("/v1", func(r chi.Router) {
 		r.Route("/action-log", func(r chi.Router) {
 			action_log.Router(r)
@@ -28,7 +30,11 @@ func Router(r chi.Router) {
 		})
 
 		r.Route("/document", func(r chi.Router) {
-			document.Router(r)
+			document.Router(r, cfg.S3)
+		})
+
+		r.Route("/faq", func(r chi.Router) {
+			faq.Router(r)
 		})
 
 		r.Route("/facility-log", func(r chi.Router) {
