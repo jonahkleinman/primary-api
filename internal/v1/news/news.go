@@ -122,9 +122,7 @@ func UpdateNews(w http.ResponseWriter, r *http.Request) {
 	news.Facility = req.Facility
 	news.Title = req.Title
 	news.Description = req.Description
-
-	// 1 is the vatusa user
-	news.UpdatedByCID = 1
+	news.UpdatedBy = "System"
 
 	if err := news.Update(database.DB); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
@@ -158,8 +156,7 @@ func PatchNews(w http.ResponseWriter, r *http.Request) {
 		news.Description = req.Description
 	}
 
-	// 1 is the vatusa user
-	news.UpdatedByCID = 1
+	news.UpdatedBy = "System"
 
 	if err := news.Update(database.DB); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
