@@ -1,8 +1,8 @@
 package news
 
 import (
-	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
@@ -12,7 +12,7 @@ import (
 )
 
 type Request struct {
-	Facility    string `json:"facility" example:"ZDV" validate:"required"`
+	Facility    string `json:"facility" example:"ZDV" validate:"required,len=3"`
 	Title       string `json:"title" example:"DP001 Revision 3 Released" validate:"required"`
 	Description string `json:"description" example:"DP001 has been revised to include new information regarding the new VATSIM Code of Conduct" validate:"required"`
 }
@@ -22,10 +22,6 @@ func (req *Request) Validate() error {
 }
 
 func (req *Request) Bind(r *http.Request) error {
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(req); err != nil {
-		return err
-	}
 	return nil
 }
 
@@ -55,12 +51,18 @@ func NewNewsListResponse(news []models.News) []render.Renderer {
 func CreateNews(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
+		fmt.Println(r.Body)
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
+		return
+	}
+
+	if !models.IsValidFacility(database.DB, data.Facility) {
+		render.Render(w, r, utils.ErrInvalidRequest(errors.New("invalid facility")))
 		return
 	}
 
@@ -112,6 +114,11 @@ func UpdateNews(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !models.IsValidFacility(database.DB, req.Facility) {
+		render.Render(w, r, utils.ErrInvalidRequest(errors.New("invalid facility")))
+		return
+	}
+
 	news.Facility = req.Facility
 	news.Title = req.Title
 	news.Description = req.Description
@@ -137,6 +144,11 @@ func PatchNews(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if req.Facility != "" {
+		if !models.IsValidFacility(database.DB, req.Facility) {
+			render.Render(w, r, utils.ErrInvalidRequest(errors.New("invalid facility")))
+			return
+		}
+
 		news.Facility = req.Facility
 	}
 	if req.Title != "" {

@@ -43,7 +43,7 @@ func Router(r chi.Router) {
 			news.Router(r)
 		})
 
-		r.Route("notification", func(r chi.Router) {
+		r.Route("/notification", func(r chi.Router) {
 			notification.Router(r)
 		})
 
