@@ -1,7 +1,6 @@
 package roster
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
@@ -13,7 +12,7 @@ import (
 
 type Request struct {
 	CID        uint   `json:"cid" example:"1293257" validate:"required"`
-	Facility   string `json:"facility" example:"ZDV" validate:"required"`
+	Facility   string `json:"facility" example:"ZDV" validate:"required,len=3"`
 	OIs        string `json:"operating_initials" example:"RP" validate:"required"`
 	Home       bool   `json:"home" example:"true"`
 	Visiting   bool   `json:"visiting" example:"false"`
@@ -27,11 +26,6 @@ func (req *Request) Validate() error {
 }
 
 func (req *Request) Bind(r *http.Request) error {
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(req); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -69,6 +63,16 @@ func CreateRoster(w http.ResponseWriter, r *http.Request) {
 
 	if err := data.Validate(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
+		return
+	}
+
+	if !models.IsValidUser(database.DB, data.CID) {
+		render.Render(w, r, utils.ErrInvalidCID)
+		return
+	}
+
+	if !models.IsValidFacility(database.DB, data.Facility) {
+		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
 
@@ -128,6 +132,26 @@ func UpdateRoster(w http.ResponseWriter, r *http.Request) {
 
 	if err := data.Validate(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
+		return
+	}
+
+	if !models.IsValidUser(database.DB, data.CID) {
+		render.Render(w, r, utils.ErrInvalidCID)
+		return
+	}
+
+	if !models.IsValidFacility(database.DB, data.Facility) {
+		render.Render(w, r, utils.ErrInvalidFacility)
+		return
+	}
+
+	if !data.Home && !data.Visiting {
+		render.Render(w, r, utils.ErrInvalidRequest(errors.New("home and visiting cannot both be false")))
+		return
+	}
+
+	if data.Home && data.Visiting {
+		render.Render(w, r, utils.ErrInvalidRequest(errors.New("home and visiting cannot both be true")))
 		return
 	}
 

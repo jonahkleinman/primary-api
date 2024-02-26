@@ -1,7 +1,6 @@
-package facility_log
+package faq
 
 import (
-	"errors"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
@@ -11,8 +10,10 @@ import (
 )
 
 type Request struct {
-	Facility string `json:"facility" example:"ZDV" validate:"required,len=3"`
-	Entry    string `json:"entry" example:"Changed Preferred OIs to RP" validate:"required"`
+	Facility string `json:"facility" validate:"required,len=3"`
+	Question string `json:"question" validate:"required"`
+	Answer   string `json:"answer" validate:"required"`
+	Category string `json:"category" validate:"required,oneof=membership training technology misc"`
 }
 
 func (req *Request) Validate() error {
@@ -24,29 +25,29 @@ func (req *Request) Bind(r *http.Request) error {
 }
 
 type Response struct {
-	*models.FacilityLogEntry
+	*models.FAQ
 }
 
-func NewFacilityLogEntryResponse(fle *models.FacilityLogEntry) *Response {
-	return &Response{FacilityLogEntry: fle}
+func NewFAQResponse(faq *models.FAQ) *Response {
+	return &Response{FAQ: faq}
 }
 
 func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
-	if res.FacilityLogEntry == nil {
-		return errors.New("facility log entry not found")
+	if res.FAQ == nil {
+		return nil
 	}
 	return nil
 }
 
-func NewFacilityLogEntryListResponse(fle []models.FacilityLogEntry) []render.Renderer {
+func NewFAQListResponse(faqs []models.FAQ) []render.Renderer {
 	list := []render.Renderer{}
-	for _, f := range fle {
-		list = append(list, NewFacilityLogEntryResponse(&f))
+	for _, f := range faqs {
+		list = append(list, NewFAQResponse(&f))
 	}
 	return list
 }
 
-func CreateFacilityLogEntry(w http.ResponseWriter, r *http.Request) {
+func CreateFAQ(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
@@ -63,42 +64,45 @@ func CreateFacilityLogEntry(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fle := &models.FacilityLogEntry{
+	faq := &models.FAQ{
 		Facility:  data.Facility,
-		Entry:     data.Entry,
-		CreatedBy: "System",
+		Question:  data.Question,
+		Answer:    data.Answer,
+		Category:  data.Category,
+		CreatedBy: 1,
 	}
 
-	if err := fle.Create(database.DB); err != nil {
+	if err := faq.Create(database.DB); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	render.Status(r, http.StatusCreated)
-	render.Render(w, r, NewFacilityLogEntryResponse(fle))
+	render.Render(w, r, NewFAQResponse(faq))
+
 }
 
-func GetFacilityLog(w http.ResponseWriter, r *http.Request) {
-	fle := GetFacilityLogCtx(r)
+func GetFAQ(w http.ResponseWriter, r *http.Request) {
+	faq := GetFAQCtx(r)
 
-	render.Render(w, r, NewFacilityLogEntryResponse(fle))
+	render.Render(w, r, NewFAQResponse(faq))
 }
 
-func ListFacilityLog(w http.ResponseWriter, r *http.Request) {
-	fle, err := models.GetAllFacilityLogEntries(database.DB)
+func ListFAQ(w http.ResponseWriter, r *http.Request) {
+	faqs, err := models.GetAllFAQ(database.DB)
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	if err := render.RenderList(w, r, NewFacilityLogEntryListResponse(fle)); err != nil {
-		render.Render(w, r, utils.ErrRender(err))
+	if err := render.RenderList(w, r, NewFAQListResponse(faqs)); err != nil {
+		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 }
 
-func UpdateFacilityLog(w http.ResponseWriter, r *http.Request) {
-	fle := GetFacilityLogCtx(r)
+func UpdateFAQ(w http.ResponseWriter, r *http.Request) {
+	faq := GetFAQCtx(r)
 
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
@@ -116,19 +120,21 @@ func UpdateFacilityLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fle.Facility = data.Facility
-	fle.Entry = data.Entry
+	faq.Facility = data.Facility
+	faq.Question = data.Question
+	faq.Answer = data.Answer
+	faq.Category = data.Category
 
-	if err := fle.Update(database.DB); err != nil {
+	if err := faq.Update(database.DB); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	render.Render(w, r, NewFacilityLogEntryResponse(fle))
+	render.Render(w, r, NewFAQResponse(faq))
 }
 
-func PatchFacilityLog(w http.ResponseWriter, r *http.Request) {
-	fle := GetFacilityLogCtx(r)
+func PatchFAQ(w http.ResponseWriter, r *http.Request) {
+	faq := GetFAQCtx(r)
 
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
@@ -141,25 +147,30 @@ func PatchFacilityLog(w http.ResponseWriter, r *http.Request) {
 			render.Render(w, r, utils.ErrInvalidFacility)
 			return
 		}
-		fle.Facility = data.Facility
+		faq.Facility = data.Facility
 	}
-	if data.Entry != "" {
-		fle.Entry = data.Entry
-
+	if data.Question != "" {
+		faq.Question = data.Question
+	}
+	if data.Answer != "" {
+		faq.Answer = data.Answer
+	}
+	if data.Category != "" {
+		faq.Category = data.Category
 	}
 
-	if err := fle.Update(database.DB); err != nil {
+	if err := faq.Update(database.DB); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	render.Render(w, r, NewFacilityLogEntryResponse(fle))
+	render.Render(w, r, NewFAQResponse(faq))
 }
 
-func DeleteFacilityLog(w http.ResponseWriter, r *http.Request) {
-	fle := GetFacilityLogCtx(r)
+func DeleteFAQ(w http.ResponseWriter, r *http.Request) {
+	faq := GetFAQCtx(r)
 
-	if err := fle.Delete(database.DB); err != nil {
+	if err := faq.Delete(database.DB); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}

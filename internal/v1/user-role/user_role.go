@@ -1,7 +1,6 @@
 package user_role
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
@@ -22,11 +21,6 @@ func (req *Request) Validate() error {
 }
 
 func (req *Request) Bind(r http.Request) error {
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(req); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -66,8 +60,13 @@ func CreateUserRoles(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !models.IsValidUser(database.DB, req.CID) {
+		render.Render(w, r, utils.ErrInvalidCID)
+		return
+	}
+
 	if !models.IsValidRole(database.DB, req.RoleID) {
-		render.Render(w, r, utils.ErrInvalidRequest(errors.New("invalid role")))
+		render.Render(w, r, utils.ErrInvalidRole)
 		return
 	}
 
@@ -119,6 +118,16 @@ func UpdateUserRole(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !models.IsValidUser(database.DB, req.CID) {
+		render.Render(w, r, utils.ErrInvalidCID)
+		return
+	}
+
+	if !models.IsValidRole(database.DB, req.RoleID) {
+		render.Render(w, r, utils.ErrInvalidRole)
+		return
+	}
+
 	userRole.CID = req.CID
 	userRole.RoleID = req.RoleID
 	userRole.FacilityID = req.FacilityID
@@ -141,6 +150,10 @@ func PatchUserRole(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if req.CID != 0 {
+		if !models.IsValidUser(database.DB, req.CID) {
+			render.Render(w, r, utils.ErrInvalidCID)
+			return
+		}
 		userRole.CID = req.CID
 	}
 	if req.RoleID != "" {

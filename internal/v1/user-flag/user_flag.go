@@ -1,7 +1,6 @@
 package user_flag
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
@@ -28,11 +27,6 @@ func (req *Request) Validate() error {
 }
 
 func (req *Request) Bind(r *http.Request) error {
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(req); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -70,6 +64,11 @@ func CreateUserFlag(w http.ResponseWriter, r *http.Request) {
 
 	if err := req.Validate(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
+		return
+	}
+
+	if !models.IsValidUser(database.DB, req.CID) {
+		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
@@ -123,6 +122,11 @@ func UpdateUserFlag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !models.IsValidUser(database.DB, req.CID) {
+		render.Render(w, r, utils.ErrInvalidCID)
+		return
+	}
+
 	userFlag := GetUserFlagCtx(r)
 	userFlag.CID = req.CID
 	userFlag.NoStaffRole = req.NoStaffRole
@@ -151,6 +155,10 @@ func PatchUserFlag(w http.ResponseWriter, r *http.Request) {
 
 	userFlag := GetUserFlagCtx(r)
 	if req.CID != 0 {
+		if !models.IsValidUser(database.DB, req.CID) {
+			render.Render(w, r, utils.ErrInvalidCID)
+			return
+		}
 		userFlag.CID = req.CID
 	}
 	if req.NoStaffRole {

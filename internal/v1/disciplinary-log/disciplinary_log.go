@@ -1,7 +1,6 @@
 package disciplinary_log
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
@@ -22,10 +21,6 @@ func (req *Request) Validate() error {
 }
 
 func (req *Request) Bind(r *http.Request) error {
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(req); err != nil {
-		return err
-	}
 	return nil
 }
 
@@ -61,6 +56,11 @@ func CreateDisciplinaryLogEntry(w http.ResponseWriter, r *http.Request) {
 
 	if err := data.Validate(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
+		return
+	}
+
+	if !models.IsValidUser(database.DB, data.CID) {
+		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
@@ -116,6 +116,12 @@ func UpdateDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !models.IsValidUser(database.DB, data.CID) {
+		render.Render(w, r, utils.ErrInvalidCID)
+		return
+	}
+
+	dle.CID = data.CID
 	dle.Entry = data.Entry
 
 	if data.VATUSAOnly {
@@ -136,6 +142,14 @@ func PatchDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	if err := data.Bind(r); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
+	}
+
+	if data.CID != 0 {
+		if !models.IsValidUser(database.DB, data.CID) {
+			render.Render(w, r, utils.ErrInvalidCID)
+			return
+		}
+		dle.CID = data.CID
 	}
 
 	if data.Entry != "" {

@@ -32,6 +32,11 @@ func (f *Facility) Get(db *gorm.DB) error {
 	return db.Where("id = ?", f.ID).First(f).Error
 }
 
+func IsValidFacility(db *gorm.DB, id string) bool {
+	var f Facility
+	return db.Where("id = ?", id).First(&f).Error == nil
+}
+
 func GetAllFacilities(db *gorm.DB) ([]Facility, error) {
 	var facilities []Facility
 	return facilities, db.Find(&facilities).Error

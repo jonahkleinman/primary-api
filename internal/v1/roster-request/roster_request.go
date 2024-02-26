@@ -1,7 +1,6 @@
 package roster_request
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
@@ -14,7 +13,7 @@ import (
 
 type Request struct {
 	CID         uint              `json:"cid" example:"1293257" validate:"required"`
-	Facility    string            `json:"requested_facility" example:"ZDV" validate:"required"`
+	Facility    string            `json:"requested_facility" example:"ZDV" validate:"required,len=3"`
 	RequestType types.RequestType `json:"request_type" example:"visiting" validate:"required,oneof=visiting transferring"`
 	Status      types.StatusType  `json:"status" example:"pending" validate:"required,oneof=pending accepted rejected"`
 	Reason      string            `json:"reason" example:"I want to transfer to ZDV" validate:"required"`
@@ -25,10 +24,6 @@ func (req *Request) Validate() error {
 }
 
 func (req *Request) Bind(r *http.Request) error {
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(req); err != nil {
-		return err
-	}
 	return nil
 }
 
@@ -64,6 +59,16 @@ func CreateRosterRequest(w http.ResponseWriter, r *http.Request) {
 
 	if err := req.Validate(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
+		return
+	}
+
+	if !models.IsValidUser(database.DB, req.CID) {
+		render.Render(w, r, utils.ErrInvalidCID)
+		return
+	}
+
+	if !models.IsValidFacility(database.DB, req.Facility) {
+		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
 
@@ -113,6 +118,16 @@ func UpdateRosterRequest(w http.ResponseWriter, r *http.Request) {
 
 	if err := data.Validate(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
+		return
+	}
+
+	if !models.IsValidUser(database.DB, req.CID) {
+		render.Render(w, r, utils.ErrInvalidCID)
+		return
+	}
+
+	if !models.IsValidFacility(database.DB, req.Facility) {
+		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
 

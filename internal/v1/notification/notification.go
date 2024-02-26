@@ -1,7 +1,6 @@
 package notification
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
@@ -25,10 +24,6 @@ func (req *Request) Validate() error {
 }
 
 func (req *Request) Bind(r *http.Request) error {
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(req); err != nil {
-		return err
-	}
 	return nil
 }
 
@@ -76,6 +71,11 @@ func CreateNotification(w http.ResponseWriter, r *http.Request) {
 	// Make sure expireAt is in the future
 	if expireAt.Before(time.Now()) {
 		render.Render(w, r, utils.ErrInvalidRequest(errors.New("expire_at must be in the future")))
+		return
+	}
+
+	if !models.IsValidUser(database.DB, data.CID) {
+		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
@@ -139,6 +139,11 @@ func UpdateNotification(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !models.IsValidUser(database.DB, data.CID) {
+		render.Render(w, r, utils.ErrInvalidCID)
+		return
+	}
+
 	n.CID = data.CID
 	n.Category = data.Category
 	n.Title = data.Title
@@ -162,6 +167,10 @@ func PatchNotification(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if data.CID != 0 {
+		if !models.IsValidUser(database.DB, data.CID) {
+			render.Render(w, r, utils.ErrInvalidCID)
+			return
+		}
 		n.CID = data.CID
 	}
 	if data.Category != "" {

@@ -1,7 +1,6 @@
 package rating_change
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
@@ -23,10 +22,6 @@ func (req *Request) Validate() error {
 }
 
 func (req *Request) Bind(r *http.Request) error {
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(req); err != nil {
-		return err
-	}
 	return nil
 }
 
@@ -62,6 +57,11 @@ func CreateRatingChange(w http.ResponseWriter, r *http.Request) {
 
 	if err := data.Validate(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
+		return
+	}
+
+	if !models.IsValidUser(database.DB, data.CID) {
+		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
@@ -114,6 +114,11 @@ func UpdateRatingChange(w http.ResponseWriter, r *http.Request) {
 
 	rc := GetRatingChangeCtx(r)
 
+	if !models.IsValidUser(database.DB, data.CID) {
+		render.Render(w, r, utils.ErrInvalidCID)
+		return
+	}
+
 	rc.CID = data.CID
 	rc.OldRating = data.OldRating
 	rc.NewRating = data.NewRating
@@ -136,6 +141,10 @@ func PatchRatingChange(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if data.CID != 0 {
+		if !models.IsValidUser(database.DB, data.CID) {
+			render.Render(w, r, utils.ErrInvalidCID)
+			return
+		}
 		rc.CID = data.CID
 	}
 	if data.OldRating != 0 {
