@@ -54,6 +54,18 @@ func NewDocumentListResponse(d []models.Document) []render.Renderer {
 	return list
 }
 
+// CreateDocument godoc
+// @Summary Create a new document
+// @Description Create a new document
+// @Tags documents
+// @Accept  json
+// @Produce  json
+// @Param document body Request true "Document"
+// @Param file formData file false "Document file"
+// @Success 201 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /documents [post]
 func CreateDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
@@ -118,11 +130,33 @@ func CreateDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 	render.Render(w, r, NewDocumentResponse(document))
 }
 
+// GetDocument godoc
+// @Summary Get a document
+// @Description Get a document
+// @Tags documents
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Document ID"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /documents/{id} [get]
 func GetDocument(w http.ResponseWriter, r *http.Request) {
 	doc := GetDocumentCtx(r)
 	render.Render(w, r, NewDocumentResponse(doc))
 }
 
+// ListDocuments godoc
+// @Summary List all documents
+// @Description List all documents
+// @Tags documents
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} []Response
+// @Failure 422 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /documents [get]
 func ListDocuments(w http.ResponseWriter, r *http.Request) {
 	docs, err := models.GetAllDocuments(database.DB)
 	if err != nil {
@@ -136,6 +170,18 @@ func ListDocuments(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// ListDocumentsByFac godoc
+// @Summary List all documents by facility
+// @Description List all documents by facility
+// @Tags documents
+// @Accept  json
+// @Produce  json
+// @Param Facility path string true "Facility ID"
+// @Success 200 {object} []Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 422 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /documents/facility/{Facility} [get]
 func ListDocumentsByFac(w http.ResponseWriter, r *http.Request) {
 	facId := chi.URLParam(r, "Facility")
 	if facId == "" {
@@ -150,12 +196,24 @@ func ListDocumentsByFac(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := render.RenderList(w, r, NewDocumentListResponse(docs)); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		render.Render(w, r, utils.ErrRender(err))
 		return
-
 	}
 }
 
+// ListDocumentsByFacByCat godoc
+// @Summary List all documents by facility and category
+// @Description List all documents by facility and category
+// @Tags documents
+// @Accept  json
+// @Produce  json
+// @Param Facility path string true "Facility ID"
+// @Param Category path string true "Category"
+// @Success 200 {object} []Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 422 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /documents/facility/{Facility}/category/{Category} [get]
 func ListDocumentsByFacByCat(w http.ResponseWriter, r *http.Request) {
 	facId := chi.URLParam(r, "Facility")
 	cat := chi.URLParam(r, "Category")
@@ -171,11 +229,24 @@ func ListDocumentsByFacByCat(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := render.RenderList(w, r, NewDocumentListResponse(docs)); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		render.Render(w, r, utils.ErrRender(err))
 		return
 	}
 }
 
+// UpdateDocument godoc
+// @Summary Update a document
+// @Description Update a document
+// @Tags documents
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Document ID"
+// @Param document body Request true "Document"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /documents/{id} [put]
 func UpdateDocument(w http.ResponseWriter, r *http.Request) {
 	doc := GetDocumentCtx(r)
 
@@ -205,6 +276,19 @@ func UpdateDocument(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewDocumentResponse(doc))
 }
 
+// PatchDocument godoc
+// @Summary Patch a document
+// @Description Patch a document
+// @Tags documents
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Document ID"
+// @Param document body Request true "Document"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /documents/{id} [patch]
 func PatchDocument(w http.ResponseWriter, r *http.Request) {
 	doc := GetDocumentCtx(r)
 
@@ -237,6 +321,17 @@ func PatchDocument(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewDocumentResponse(doc))
 }
 
+// DeleteDocument godoc
+// @Summary Delete a document
+// @Description Delete a document
+// @Tags documents
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Document ID"
+// @Success 204
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /documents/{id} [delete]
 func DeleteDocument(w http.ResponseWriter, r *http.Request) {
 	doc := GetDocumentCtx(r)
 
@@ -257,6 +352,18 @@ func DeleteDocument(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// UploadDocument godoc
+// @Summary Upload a document
+// @Description Upload a document
+// @Tags documents
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Document ID"
+// @Param file formData file true "Document file"
+// @Success 204
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /documents/{id}/upload [post]
 func UploadDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 	data := GetDocumentCtx(r)
 

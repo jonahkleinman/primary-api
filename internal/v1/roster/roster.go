@@ -54,6 +54,17 @@ func NewRosterListResponse(r []models.Roster) []render.Renderer {
 	return list
 }
 
+// CreateRoster godoc
+// @Summary Create a new roster
+// @Description Create a new roster
+// @Tags roster
+// @Accept  json
+// @Produce  json
+// @Param roster body Request true "Roster"
+// @Success 201 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /roster [post]
 func CreateRoster(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
@@ -106,12 +117,34 @@ func CreateRoster(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewRosterResponse(roster))
 }
 
+// GetRoster godoc
+// @Summary Get a roster
+// @Description Get a roster
+// @Tags roster
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Roster ID"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /roster/{id} [get]
 func GetRoster(w http.ResponseWriter, r *http.Request) {
 	roster := GetRosterCtx(r)
 
 	render.Render(w, r, NewRosterResponse(roster))
 }
 
+// ListRoster godoc
+// @Summary List rosters
+// @Description List rosters
+// @Tags roster
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} []Response
+// @Failure 422 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /roster [get]
 func ListRoster(w http.ResponseWriter, r *http.Request) {
 	rosters, err := models.GetAllRosters(database.DB)
 	if err != nil {
@@ -119,9 +152,25 @@ func ListRoster(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.RenderList(w, r, NewRosterListResponse(rosters))
+	if err := render.RenderList(w, r, NewRosterListResponse(rosters)); err != nil {
+		render.Render(w, r, utils.ErrRender(err))
+		return
+	}
 }
 
+// UpdateRoster godoc
+// @Summary Update a roster
+// @Description Update a roster
+// @Tags roster
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Roster ID"
+// @Param roster body Request true "Roster"
+// @Success 204
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /roster/{id} [put]
 func UpdateRoster(w http.ResponseWriter, r *http.Request) {
 	roster := GetRosterCtx(r)
 	data := &Request{}
@@ -172,6 +221,17 @@ func UpdateRoster(w http.ResponseWriter, r *http.Request) {
 	render.Status(r, http.StatusNoContent)
 }
 
+// DeleteRoster godoc
+// @Summary Delete a roster
+// @Description Delete a roster
+// @Tags roster
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Roster ID"
+// @Success 204
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /roster/{id} [delete]
 func DeleteRoster(w http.ResponseWriter, r *http.Request) {
 	roster := GetRosterCtx(r)
 

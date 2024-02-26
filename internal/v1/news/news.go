@@ -48,6 +48,17 @@ func NewNewsListResponse(news []models.News) []render.Renderer {
 	return list
 }
 
+// CreateNews godoc
+// @Summary Create a new news entry
+// @Description Create a new news entry
+// @Tags news
+// @Accept  json
+// @Produce  json
+// @Param news body Request true "News Entry"
+// @Success 201 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /news [post]
 func CreateNews(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
@@ -82,11 +93,33 @@ func CreateNews(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewNewsResponse(news))
 }
 
+// GetNews godoc
+// @Summary Get a news entry
+// @Description Get a news entry
+// @Tags news
+// @Accept  json
+// @Produce  json
+// @Param id path string true "News ID"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /news/{id} [get]
 func GetNews(w http.ResponseWriter, r *http.Request) {
 	news := GetNewsCtx(r)
 	render.Render(w, r, NewNewsResponse(news))
 }
 
+// ListNews godoc
+// @Summary List all news entries
+// @Description List all news entries
+// @Tags news
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} []Response
+// @Failure 422 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /news [get]
 func ListNews(w http.ResponseWriter, r *http.Request) {
 	news, err := models.GetAllNews(database.DB)
 	if err != nil {
@@ -100,6 +133,19 @@ func ListNews(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// UpdateNews godoc
+// @Summary Update a news entry
+// @Description Update a news entry
+// @Tags news
+// @Accept  json
+// @Produce  json
+// @Param id path string true "News ID"
+// @Param news body Request true "News Entry"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /news/{id} [put]
 func UpdateNews(w http.ResponseWriter, r *http.Request) {
 	news := GetNewsCtx(r)
 
@@ -132,6 +178,19 @@ func UpdateNews(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewNewsResponse(news))
 }
 
+// PatchNews godoc
+// @Summary Patch a news entry
+// @Description Patch a news entry
+// @Tags news
+// @Accept  json
+// @Produce  json
+// @Param id path string true "News ID"
+// @Param news body Request true "News Entry"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /news/{id} [patch]
 func PatchNews(w http.ResponseWriter, r *http.Request) {
 	news := GetNewsCtx(r)
 
@@ -166,6 +225,16 @@ func PatchNews(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewNewsResponse(news))
 }
 
+// DeleteNews godoc
+// @Summary Delete a news entry
+// @Description Delete a news entry
+// @Tags news
+// @Accept  json
+// @Produce  json
+// @Param id path string true "News ID"
+// @Success 204
+// @Failure 500 {object} utils.ErrResponse
+// @Router /news/{id} [delete]
 func DeleteNews(w http.ResponseWriter, r *http.Request) {
 	news := GetNewsCtx(r)
 	if err := news.Delete(database.DB); err != nil {

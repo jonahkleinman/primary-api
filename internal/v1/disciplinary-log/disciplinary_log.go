@@ -47,6 +47,17 @@ func NewDisciplinaryLogEntryListResponse(dle []models.DisciplinaryLogEntry) []re
 	return list
 }
 
+// CreateDisciplinaryLogEntry godoc
+// @Summary Create a new disciplinary log entry
+// @Description Create a new disciplinary log entry
+// @Tags disciplinary-log
+// @Accept  json
+// @Produce  json
+// @Param disciplinary_log body Request true "Disciplinary Log Entry"
+// @Success 201 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /disciplinary-log [post]
 func CreateDisciplinaryLogEntry(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
@@ -85,11 +96,33 @@ func CreateDisciplinaryLogEntry(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewDisciplinaryLogEntryResponse(dle))
 }
 
+// GetDisciplinaryLog godoc
+// @Summary Get a disciplinary log entry
+// @Description Get a disciplinary log entry
+// @Tags disciplinary-log
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Disciplinary Log Entry ID"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /disciplinary-log/{id} [get]
 func GetDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	dle := GetDisciplinaryLogCtx(r)
 	render.Render(w, r, NewDisciplinaryLogEntryResponse(dle))
 }
 
+// ListDisciplinaryLog godoc
+// @Summary List all disciplinary log entries
+// @Description List all disciplinary log entries
+// @Tags disciplinary-log
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} []Response
+// @Failure 422 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /disciplinary-log [get]
 func ListDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	dle, err := models.GetAllDisciplinaryLogEntries(database.DB, true)
 	if err != nil {
@@ -103,6 +136,18 @@ func ListDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// UpdateDisciplinaryLog godoc
+// @Summary Update a disciplinary log entry
+// @Description Update a disciplinary log entry
+// @Tags disciplinary-log
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Disciplinary Log Entry ID"
+// @Param disciplinary_log body Request true "Disciplinary Log Entry"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /disciplinary-log/{id} [put]
 func UpdateDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	dle := GetDisciplinaryLogCtx(r)
 	data := &Request{}
@@ -136,6 +181,18 @@ func UpdateDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewDisciplinaryLogEntryResponse(dle))
 }
 
+// PatchDisciplinaryLog godoc
+// @Summary Patch a disciplinary log entry
+// @Description Patch a disciplinary log entry
+// @Tags disciplinary-log
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Disciplinary Log Entry ID"
+// @Param disciplinary_log body Request true "Disciplinary Log Entry"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /disciplinary-log/{id} [patch]
 func PatchDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	dle := GetDisciplinaryLogCtx(r)
 	data := &Request{}
@@ -168,6 +225,16 @@ func PatchDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewDisciplinaryLogEntryResponse(dle))
 }
 
+// DeleteDisciplinaryLog godoc
+// @Summary Delete a disciplinary log entry
+// @Description Delete a disciplinary log entry
+// @Tags disciplinary-log
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Disciplinary Log Entry ID"
+// @Success 204
+// @Failure 500 {object} utils.ErrResponse
+// @Router /disciplinary-log/{id} [delete]
 func DeleteDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	dle := GetDisciplinaryLogCtx(r)
 	if err := dle.Delete(database.DB); err != nil {

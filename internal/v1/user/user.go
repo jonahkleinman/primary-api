@@ -56,6 +56,17 @@ func NewUserListResponse(users []models.User) []render.Renderer {
 	return list
 }
 
+// CreateUser godoc
+// @Summary Create a new user
+// @Description Create a new user
+// @Tags user
+// @Accept  json
+// @Produce  json
+// @Param user body Request true "User"
+// @Success 201 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /user [post]
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	req := &Request{}
 	if err := render.Bind(r, req); err != nil {
@@ -88,12 +99,34 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewUserResponse(user))
 }
 
+// GetUser godoc
+// @Summary Get a user
+// @Description Get a user
+// @Tags user
+// @Accept  json
+// @Produce  json
+// @Param cid path int true "CID"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /user/{cid} [get]
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	user := GetUserCtx(r)
 
 	render.Render(w, r, NewUserResponse(user))
 }
 
+// ListUsers godoc
+// @Summary List users
+// @Description List users
+// @Tags user
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 422 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /user [get]
 func ListUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := models.GetAllUsers(database.DB)
 	if err != nil {
@@ -107,6 +140,18 @@ func ListUsers(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// UpdateUser godoc
+// @Summary Update a user
+// @Description Update a user
+// @Tags user
+// @Accept  json
+// @Produce  json
+// @Param cid path int true "CID"
+// @Param user body Request true "User"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /user/{cid} [put]
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	user := GetUserCtx(r)
 
@@ -139,6 +184,18 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewUserResponse(user))
 }
 
+// PatchUser godoc
+// @Summary Patch a user
+// @Description Patch a user
+// @Tags user
+// @Accept  json
+// @Produce  json
+// @Param cid path int true "CID"
+// @Param user body Request true "User"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /user/{cid} [patch]
 func PatchUser(w http.ResponseWriter, r *http.Request) {
 	user := GetUserCtx(r)
 
@@ -175,6 +232,17 @@ func PatchUser(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewUserResponse(user))
 }
 
+// DeleteUser godoc
+// @Summary Delete a user
+// @Description Delete a user
+// @Tags user
+// @Accept  json
+// @Produce  json
+// @Param cid path int true "CID"
+// @Success 204
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /user/{cid} [delete]
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	user := GetUserCtx(r)
 

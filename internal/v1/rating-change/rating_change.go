@@ -48,6 +48,17 @@ func NewRatingChangeListResponse(rc []models.RatingChange) []render.Renderer {
 	return list
 }
 
+// CreateRatingChange godoc
+// @Summary Create a new rating change
+// @Description Create a new rating change
+// @Tags rating-change
+// @Accept  json
+// @Produce  json
+// @Param rating_change body Request true "Rating Change"
+// @Success 201 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /rating-change [post]
 func CreateRatingChange(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
@@ -81,12 +92,34 @@ func CreateRatingChange(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewRatingChangeResponse(rc))
 }
 
+// GetRatingChange godoc
+// @Summary Get a rating change
+// @Description Get a rating change
+// @Tags rating-change
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Rating Change ID"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /rating-change/{id} [get]
 func GetRatingChange(w http.ResponseWriter, r *http.Request) {
 	rc := GetRatingChangeCtx(r)
 
 	render.Render(w, r, NewRatingChangeResponse(rc))
 }
 
+// ListRatingChanges godoc
+// @Summary List rating changes
+// @Description List rating changes
+// @Tags rating-change
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} []Response
+// @Failure 422 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /rating-change [get]
 func ListRatingChanges(w http.ResponseWriter, r *http.Request) {
 	rc, err := models.GetAllRatingChanges(database.DB)
 	if err != nil {
@@ -100,6 +133,19 @@ func ListRatingChanges(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// UpdateRatingChange godoc
+// @Summary Update a rating change
+// @Description Update a rating change
+// @Tags rating-change
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Rating Change ID"
+// @Param rating_change body Request true "Rating Change"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /rating-change/{id} [put]
 func UpdateRatingChange(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
@@ -132,6 +178,19 @@ func UpdateRatingChange(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewRatingChangeResponse(rc))
 }
 
+// PatchRatingChange godoc
+// @Summary Patch a rating change
+// @Description Patch a rating change
+// @Tags rating-change
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Rating Change ID"
+// @Param rating_change body Request true "Rating Change"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /rating-change/{id} [patch]
 func PatchRatingChange(w http.ResponseWriter, r *http.Request) {
 	rc := GetRatingChangeCtx(r)
 	data := &Request{}
@@ -165,6 +224,17 @@ func PatchRatingChange(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewRatingChangeResponse(rc))
 }
 
+// DeleteRatingChange godoc
+// @Summary Delete a rating change
+// @Description Delete a rating change
+// @Tags rating-change
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Rating Change ID"
+// @Success 204
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /rating-change/{id} [delete]
 func DeleteRatingChange(w http.ResponseWriter, r *http.Request) {
 	rc := GetRatingChangeCtx(r)
 	if err := rc.Delete(database.DB); err != nil {

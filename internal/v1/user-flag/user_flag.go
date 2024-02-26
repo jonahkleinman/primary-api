@@ -55,6 +55,17 @@ func NewUserFlagListResponse(r []models.UserFlag) []render.Renderer {
 	return list
 }
 
+// CreateUserFlag godoc
+// @Summary Create a new user flag
+// @Description Create a new user flag
+// @Tags user-flag
+// @Accept  json
+// @Produce  json
+// @Param user_flag body Request true "User Flag"
+// @Success 201 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /user-flag [post]
 func CreateUserFlag(w http.ResponseWriter, r *http.Request) {
 	req := &Request{}
 	if err := req.Bind(r); err != nil {
@@ -93,10 +104,32 @@ func CreateUserFlag(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewUserFlagResponse(userFlag))
 }
 
+// GetUserFlag godoc
+// @Summary Get a user flag
+// @Description Get a user flag
+// @Tags user-flag
+// @Accept  json
+// @Produce  json
+// @Param id path int true "User Flag ID"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /user-flag/{id} [get]
 func GetUserFlag(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewUserFlagResponse(GetUserFlagCtx(r)))
 }
 
+// ListUserFlag godoc
+// @Summary List user flags
+// @Description List user flags
+// @Tags user-flag
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} []Response
+// @Failure 422 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /user-flag [get]
 func ListUserFlag(w http.ResponseWriter, r *http.Request) {
 	flags, err := models.GetAllFlags(database.DB)
 	if err != nil {
@@ -110,6 +143,18 @@ func ListUserFlag(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// UpdateUserFlag godoc
+// @Summary Update a user flag
+// @Description Update a user flag
+// @Tags user-flag
+// @Accept  json
+// @Produce  json
+// @Param cid path int true "CID"
+// @Param user_flag body Request true "User Flag"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
 func UpdateUserFlag(w http.ResponseWriter, r *http.Request) {
 	req := &Request{}
 	if err := req.Bind(r); err != nil {
@@ -146,6 +191,19 @@ func UpdateUserFlag(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewUserFlagResponse(userFlag))
 }
 
+// PatchUserFlag godoc
+// @Summary Patch a user flag
+// @Description Patch a user flag
+// @Tags user-flag
+// @Accept  json
+// @Produce  json
+// @Param cid path int true "CID"
+// @Param user_flag body Request true "User Flag"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /user-flag/{cid} [patch]
 func PatchUserFlag(w http.ResponseWriter, r *http.Request) {
 	req := &Request{}
 	if err := req.Bind(r); err != nil {
@@ -194,6 +252,17 @@ func PatchUserFlag(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewUserFlagResponse(userFlag))
 }
 
+// DeleteUserFlag godoc
+// @Summary Delete a user flag
+// @Description Delete a user flag
+// @Tags user-flag
+// @Accept  json
+// @Produce  json
+// @Param cid path int true "CID"
+// @Success 204
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /user-flag/{cid} [delete]
 func DeleteUserFlag(w http.ResponseWriter, r *http.Request) {
 	userFlag := GetUserFlagCtx(r)
 	if err := userFlag.Delete(database.DB); err != nil {

@@ -54,6 +54,17 @@ func NewFeedbackListResponse(f []models.Feedback) []render.Renderer {
 	return list
 }
 
+// CreateFeedback godoc
+// @Summary Create a new feedback entry
+// @Description Create a new feedback entry
+// @Tags feedback
+// @Accept  json
+// @Produce  json
+// @Param feedback body Request true "Feedback Entry"
+// @Success 201 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /feedback [post]
 func CreateFeedback(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
@@ -96,11 +107,33 @@ func CreateFeedback(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewFeedbackResponse(f))
 }
 
+// GetFeedback godoc
+// @Summary Get a feedback entry
+// @Description Get a feedback entry
+// @Tags feedback
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Feedback ID"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /feedback/{id} [get]
 func GetFeedback(w http.ResponseWriter, r *http.Request) {
 	f := GetFeedbackCtx(r)
 	render.Render(w, r, NewFeedbackResponse(f))
 }
 
+// ListFeedback godoc
+// @Summary List feedback entries
+// @Description List feedback entries
+// @Tags feedback
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} []Response
+// @Failure 422 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /feedback [get]
 func ListFeedback(w http.ResponseWriter, r *http.Request) {
 	f, err := models.GetAllFeedback(database.DB)
 	if err != nil {
@@ -114,6 +147,18 @@ func ListFeedback(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// UpdateFeedback godoc
+// @Summary Update a feedback entry
+// @Description Update a feedback entry
+// @Tags feedback
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Feedback ID"
+// @Param feedback body Request true "Feedback Entry"
+// @Success 204
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /feedback/{id} [put]
 func UpdateFeedback(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
@@ -155,6 +200,18 @@ func UpdateFeedback(w http.ResponseWriter, r *http.Request) {
 	render.Status(r, http.StatusNoContent)
 }
 
+// PatchFeedback godoc
+// @Summary Patch a feedback entry
+// @Description Patch a feedback entry
+// @Tags feedback
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Feedback ID"
+// @Param feedback body Request true "Feedback Entry"
+// @Success 204
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /feedback/{id} [patch]
 func PatchFeedback(w http.ResponseWriter, r *http.Request) {
 	f := GetFeedbackCtx(r)
 	data := &Request{}
@@ -207,6 +264,17 @@ func PatchFeedback(w http.ResponseWriter, r *http.Request) {
 	render.Status(r, http.StatusNoContent)
 }
 
+// DeleteFeedback godoc
+// @Summary Delete a feedback entry
+// @Description Delete a feedback entry
+// @Tags feedback
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Feedback ID"
+// @Success 204
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /feedback/{id} [delete]
 func DeleteFeedback(w http.ResponseWriter, r *http.Request) {
 	f := GetFeedbackCtx(r)
 	if err := f.Delete(database.DB); err != nil {
