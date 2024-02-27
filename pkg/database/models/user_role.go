@@ -53,11 +53,7 @@ func GetAllUserRolesByFacilityID(db *gorm.DB, facilityID string) ([]UserRole, er
 }
 
 func CanModifyRole(user *User, role constants.RoleID) bool {
-	if _, ok := constants.Roles[role]; !ok {
-		return false
-	}
-
-	return HasRoleList(user, constants.Roles[role].RolesCanAdd)
+	return HasRoleList(user, role.RolesCanAdd())
 }
 
 func HasRoleList(user *User, roles []constants.RoleID) bool {

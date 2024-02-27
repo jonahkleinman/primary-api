@@ -1,14 +1,13 @@
 package constants
 
-import (
-	"slices"
-)
-
 type RoleID string
+type GroupID string
 
 type Role struct {
-	Name        string
-	RolesCanAdd []RoleID
+	Name         string
+	Groups       []GroupID // Groups this role is a part of
+	RolesCanAdd  []RoleID  // Roles this role can be added by
+	GroupsCanAdd []GroupID // Groups this role can be added by
 }
 
 const (
@@ -50,413 +49,411 @@ const (
 	EmailUser RoleID = "EMAIL"
 )
 
+const (
+	// Division Groups
+	DivisionManagement  GroupID = "div_mgmt"
+	DivisionStaff       GroupID = "div_staff"
+	DivisionDevelopment GroupID = "div_dev"
+	DivisionEvents      GroupID = "div_events"
+	DivisionTraining    GroupID = "div_training"
+
+	// Facility Groups
+	FacilityManagement  GroupID = "fac_mgmt"
+	FacilityStaff       GroupID = "fac_staff"
+	FacilityEvents      GroupID = "fac_events"
+	FacilityTraining    GroupID = "fac_training"
+	FacilityDevelopment GroupID = "fac_dev"
+	FacilityEngineers   GroupID = "fac_eng"
+
+	// Misc Groups
+	TrafficManagement GroupID = "tmu"
+)
+
 var Roles = map[RoleID]Role{
 	// ARTCC Roles
 	AirTrafficManagerRole: {
 		Name: "Air Traffic Manager",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			SupportServicesRole,
-			TechnicalManagerRole,
-			DeveloperTeamRole,
+		Groups: []GroupID{
+			FacilityManagement,
+		},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
 		},
 	},
 	DeputyAirTrafficManagerRole: {
 		Name: "Deputy Air Traffic Manager",
+		Groups: []GroupID{
+			FacilityManagement,
+		},
 		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			SupportServicesRole,
-			TechnicalManagerRole,
-			DeveloperTeamRole,
 			AirTrafficManagerRole,
+		},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
+			FacilityManagement,
 		},
 	},
 	TrainingAdministratorRole: {
-		Name: "Training Administrator",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			TrainingServicesRole,
-			SupportServicesRole,
-			TechnicalManagerRole,
-			TrainingServicesManagerRole,
-			DeveloperTeamRole,
+		Name:        "Training Administrator",
+		Groups:      []GroupID{},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
+			DivisionTraining,
+			FacilityManagement,
 		},
 	},
 	EventCoordinatorRole: {
 		Name: "Event Coordinator",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			SupportServicesRole,
-			EventsManagerRole,
-			TechnicalManagerRole,
-			DeveloperTeamRole,
-			AirTrafficManagerRole,
-			DeputyAirTrafficManagerRole,
+		Groups: []GroupID{
+			FacilityStaff,
+			FacilityEvents,
+		},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
+			DivisionEvents,
+			FacilityManagement,
 		},
 	},
 	AssistantEventCoordinator: {
 		Name: "Assistant Event Coordinator",
+		Groups: []GroupID{
+			FacilityEvents,
+		},
 		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			SupportServicesRole,
-			EventsManagerRole,
-			TechnicalManagerRole,
-			DeveloperTeamRole,
-			AirTrafficManagerRole,
-			DeputyAirTrafficManagerRole,
 			EventCoordinatorRole,
+		},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionEvents,
+			FacilityManagement,
 		},
 	},
 	FacilityEngineerRole: {
 		Name: "Facility Engineer",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			SupportServicesRole,
-			TechnicalManagerRole,
-			DeveloperTeamRole,
-			AirTrafficManagerRole,
-			DeputyAirTrafficManagerRole,
+		Groups: []GroupID{
+			FacilityStaff,
+			FacilityEngineers,
+		},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
+			FacilityManagement,
 		},
 	},
 	AssistantFacilityEngineer: {
 		Name: "Assistant Facility Engineer",
+		Groups: []GroupID{
+			FacilityEngineers,
+		},
 		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			SupportServicesRole,
-			TechnicalManagerRole,
-			DeveloperTeamRole,
-			AirTrafficManagerRole,
-			DeputyAirTrafficManagerRole,
 			FacilityEngineerRole,
+		},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
+			FacilityManagement,
 		},
 	},
 	WebMasterRole: {
 		Name: "Webmaster",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			SupportServicesRole,
-			TechnicalManagerRole,
-			DeveloperTeamRole,
-			AirTrafficManagerRole,
-			DeputyAirTrafficManagerRole,
+		Groups: []GroupID{
+			FacilityStaff,
+			FacilityDevelopment,
+		},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
+			FacilityManagement,
 		},
 	},
 	AssistantWebMasterRole: {
 		Name: "Assistant Webmaster",
+		Groups: []GroupID{
+			FacilityDevelopment,
+		},
 		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			SupportServicesRole,
-			TechnicalManagerRole,
-			DeveloperTeamRole,
-			AirTrafficManagerRole,
-			DeputyAirTrafficManagerRole,
 			WebMasterRole,
+		},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
+			FacilityManagement,
+			FacilityDevelopment,
 		},
 	},
 	InstructorRole: {
 		Name: "Instructor",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			TrainingServicesRole,
-			TrainingServicesManagerRole,
-			TechnicalManagerRole,
-			DeveloperTeamRole,
+		Groups: []GroupID{
+			FacilityTraining,
+		},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionTraining,
+			DivisionDevelopment,
 		},
 	},
 	MentorRole: {
 		Name: "Mentor",
+		Groups: []GroupID{
+			FacilityTraining,
+		},
 		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			TrainingServicesRole,
-			TrainingServicesManagerRole,
-			TechnicalManagerRole,
-			DeveloperTeamRole,
-			AirTrafficManagerRole,
-			DeputyAirTrafficManagerRole,
 			TrainingAdministratorRole,
+		},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionTraining,
+			DivisionDevelopment,
+			FacilityManagement,
 		},
 	},
 
 	// Division Roles
 	DivisionDirectorRole: {
 		Name: "Division Director",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			TrainingServicesRole,
-			TechnicalManagerRole,
+		Groups: []GroupID{
+			DivisionManagement,
+		},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
 		},
 	},
 	AirTrafficServicesRole: {
 		Name: "Deputy Director Air Traffic Services",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			TechnicalManagerRole,
+		Groups: []GroupID{
+			DivisionManagement,
+		},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
 		},
 	},
 	TrainingServicesRole: {
 		Name: "Deputy Director Training Services",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			TrainingServicesRole,
-			TechnicalManagerRole,
+		Groups: []GroupID{
+			DivisionManagement,
+		},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
 		},
 	},
 	SupportServicesRole: {
 		Name: "Deputy Director Support Services",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			SupportServicesRole,
-			TechnicalManagerRole,
+		Groups: []GroupID{
+			DivisionManagement,
+		},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
 		},
 	},
 	EventsManagerRole: {
 		Name: "Events Manager",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			SupportServicesRole,
-			EventsManagerRole,
-			TechnicalManagerRole,
+		Groups: []GroupID{
+			DivisionStaff,
+			DivisionEvents,
+		},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
 		},
 	},
 	TechnicalManagerRole: {
 		Name: "Technical Manager",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			SupportServicesRole,
-			TechnicalManagerRole,
+		Groups: []GroupID{
+			DivisionStaff,
+			DivisionDevelopment,
+		},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
 		},
 	},
 	StaffDevelopmentManagerRole: {
 		Name: "Staff Development Manager",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			SupportServicesRole,
-			TechnicalManagerRole,
+		Groups: []GroupID{
+			DivisionStaff,
+		},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
 		},
 	},
 	TrainingServicesManagerRole: {
 		Name: "Training Services Manager",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			TrainingServicesRole,
-			TechnicalManagerRole,
+		Groups: []GroupID{
+			DivisionStaff,
+			DivisionTraining,
+		},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
+			DivisionTraining,
 		},
 	},
 	TrainingContentManagerRole: {
 		Name: "Training Content Manager",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			TrainingServicesRole,
-			TechnicalManagerRole,
+		Groups: []GroupID{
+			DivisionStaff,
+			DivisionTraining,
+		},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
+			DivisionTraining,
 		},
 	},
 
 	// Other Roles
 	DeveloperTeamRole: {
 		Name: "Developer Team",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			SupportServicesRole,
-			TechnicalManagerRole,
+		Groups: []GroupID{
+			DivisionDevelopment,
+		},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
 		},
 	},
 	AceTeamRole: {
 		Name: "ACE Team",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			SupportServicesRole,
-			EventsManagerRole,
-			TechnicalManagerRole,
+		Groups: []GroupID{
+			TrafficManagement,
+		},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
+			DivisionEvents,
 		},
 	},
 	NTMSRole: {
 		Name: "National Traffic Management Supervisor",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			SupportServicesRole,
-			EventsManagerRole,
-			TechnicalManagerRole,
+		Groups: []GroupID{
+			TrafficManagement,
+		},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
+			DivisionEvents,
 		},
 	},
 	NTMTRole: {
 		Name: "National Training Management Supervisor",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			TrainingServicesRole,
-			EventsManagerRole,
-			TechnicalManagerRole,
+		Groups: []GroupID{
+			TrafficManagement,
+		},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
+			DivisionEvents,
 		},
 	},
 	SocialMediaTeam: {
-		Name: "Social Media Team",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			SupportServicesRole,
-			TechnicalManagerRole,
+		Name:        "Social Media Team",
+		Groups:      []GroupID{},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
 		},
 	},
 	TrainingContentTeam: {
-		Name: "Training Content Team",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			TrainingServicesRole,
-			TrainingServicesManagerRole,
-			TrainingContentManagerRole,
-			TechnicalManagerRole,
+		Name:        "Training Content Team",
+		Groups:      []GroupID{},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
+			DivisionTraining,
 		},
 	},
 	AcademyMaterialEditor: {
-		Name: "Academy Material Editor (Academy)",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			TrainingServicesRole,
-			TrainingServicesManagerRole,
-			TrainingContentManagerRole,
-			TechnicalManagerRole,
+		Name:        "Academy Material Editor (Academy)",
+		Groups:      []GroupID{},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
+			DivisionTraining,
 		},
 	},
 	FacilityMaterialEditor: {
-		Name: "Academy Material Editor (Facility)",
+		Name:   "Academy Material Editor (Facility)",
+		Groups: []GroupID{},
 		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			TrainingServicesRole,
-			TrainingServicesManagerRole,
-			TrainingContentManagerRole,
-			TechnicalManagerRole,
-			AirTrafficManagerRole,
-			DeputyAirTrafficManagerRole,
 			TrainingAdministratorRole,
+		},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionDevelopment,
+			DivisionTraining,
+			FacilityManagement,
 		},
 	},
 
 	// Misc Roles
 	EmailUser: {
-		Name: "Email User",
-		RolesCanAdd: []RoleID{
-			DivisionDirectorRole,
-			AirTrafficServicesRole,
-			TrainingServicesRole,
-			SupportServicesRole,
-			EventsManagerRole,
-			TechnicalManagerRole,
-			StaffDevelopmentManagerRole,
-			TrainingServicesManagerRole,
-			TrainingContentManagerRole,
-
-			AirTrafficManagerRole,
-			DeputyAirTrafficManagerRole,
-			TrainingAdministratorRole,
-			EventCoordinatorRole,
-			FacilityEngineerRole,
-			WebMasterRole,
+		Name:        "Email User",
+		Groups:      []GroupID{},
+		RolesCanAdd: []RoleID{},
+		GroupsCanAdd: []GroupID{
+			DivisionManagement,
+			DivisionStaff,
+			FacilityManagement,
+			FacilityStaff,
 		},
 	},
 }
 
-var (
-	FacilityGroup = []RoleID{
-		AirTrafficManagerRole,
-		DeputyAirTrafficManagerRole,
-		TrainingAdministratorRole,
-		EventCoordinatorRole,
-		AssistantEventCoordinator,
-		FacilityEngineerRole,
-		AssistantFacilityEngineer,
-		WebMasterRole,
-		AssistantWebMasterRole,
-		InstructorRole,
-		MentorRole,
-		FacilityMaterialEditor,
-		EmailUser,
-	}
-
-	FacilityStaffGroup = []RoleID{
-		AirTrafficManagerRole,
-		DeputyAirTrafficManagerRole,
-		TrainingAdministratorRole,
-		EventCoordinatorRole,
-		FacilityEngineerRole,
-		WebMasterRole,
-	}
-	FacilitySeniorStaffGroup = []RoleID{
-		AirTrafficManagerRole,
-		DeputyAirTrafficManagerRole,
-		TrainingAdministratorRole,
-	}
-
-	FacilityJuniorStaffGroup = []RoleID{
-		EventCoordinatorRole,
-		FacilityEngineerRole,
-		WebMasterRole,
-	}
-
-	FacilityAssistantGroup = []RoleID{
-		AssistantEventCoordinator,
-		AssistantFacilityEngineer,
-		AssistantWebMasterRole,
-	}
-
-	DivisionSeniorStaffGroup = []RoleID{
-		DivisionDirectorRole,
-		AirTrafficServicesRole,
-		TrainingServicesRole,
-		SupportServicesRole,
-	}
-
-	DivisionJuniorStaffGroup = []RoleID{
-		EventsManagerRole,
-		TechnicalManagerRole,
-		StaffDevelopmentManagerRole,
-		TrainingServicesManagerRole,
-		TrainingContentManagerRole,
-	}
-)
+func (r RoleID) IsValidRole() bool {
+	_, ok := Roles[r]
+	return ok
+}
 
 func (r RoleID) DisplayName() string {
 	return Roles[r].Name
 }
 
-func (r RoleID) isFacilityStaff() bool {
-	return slices.Contains(FacilityGroup, r)
+func (r RoleID) RolesCanAdd() []RoleID {
+	if !r.IsValidRole() {
+		return []RoleID{}
+	}
+	return Roles[r].RolesCanAdd
 }
 
-func (r RoleID) isFacilitySeniorStaff() bool {
-	return slices.Contains(FacilitySeniorStaffGroup, r)
-}
-
-func (r RoleID) isFacilityJuniorStaff() bool {
-	return slices.Contains(FacilityJuniorStaffGroup, r)
-}
-
-func IsValidRole(role RoleID) bool {
-	_, ok := Roles[role]
-	return ok
+func (r RoleID) InGroup(group GroupID) bool {
+	if !r.IsValidRole() {
+		return false
+	}
+	for _, g := range Roles[r].Groups {
+		if g == group {
+			return true
+		}
+	}
+	return false
 }

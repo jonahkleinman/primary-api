@@ -76,7 +76,7 @@ func CreateUserRoles(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !constants.IsValidRole(req.RoleID) {
+	if !req.RoleID.IsValidRole() {
 		render.Render(w, r, utils.ErrInvalidRole)
 		return
 	}
@@ -166,7 +166,7 @@ func UpdateUserRole(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !constants.IsValidRole(req.RoleID) {
+	if !req.RoleID.IsValidRole() {
 		render.Render(w, r, utils.ErrInvalidRole)
 		return
 	}
@@ -211,7 +211,7 @@ func PatchUserRole(w http.ResponseWriter, r *http.Request) {
 		userRole.CID = req.CID
 	}
 	if req.RoleID != "" {
-		if !constants.IsValidRole(req.RoleID) {
+		if !req.RoleID.IsValidRole() {
 			render.Render(w, r, utils.ErrInvalidRequest(errors.New("invalid role")))
 			return
 		}
