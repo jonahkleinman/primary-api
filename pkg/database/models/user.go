@@ -46,14 +46,14 @@ func (u *User) Delete(db *gorm.DB) error {
 
 func (u *User) Get(db *gorm.DB) error {
 	if u.Email != "" {
-		return db.Where("email = ?", u.Email).First(u).Error
+		return db.Where("email = ?", u.Email).Preload("Roles").First(u).Error
 	}
 
 	if u.DiscordID != "" {
-		return db.Where("discord_id = ?", u.DiscordID).First(u).Error
+		return db.Where("discord_id = ?", u.DiscordID).Preload("Roles").First(u).Error
 	}
 
-	return db.Where("c_id = ?", u.CID).First(u).Error
+	return db.Where("c_id = ?", u.CID).Preload("Roles").First(u).Error
 }
 
 func GetAllUsers(db *gorm.DB) ([]User, error) {

@@ -2,6 +2,7 @@ package user_role
 
 import (
 	"errors"
+	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
@@ -11,9 +12,9 @@ import (
 )
 
 type Request struct {
-	CID        uint   `json:"cid" example:"1293257" validate:"required"`
-	RoleID     string `json:"role_id" example:"ATM" validate:"required"`
-	FacilityID string `json:"facility_id" example:"ZDV" validate:"required"`
+	CID        uint             `json:"cid" example:"1293257" validate:"required"`
+	RoleID     constants.RoleID `json:"role_id" example:"ATM" validate:"required"`
+	FacilityID string           `json:"facility_id" example:"ZDV" validate:"required"`
 }
 
 func (req *Request) Validate() error {
@@ -76,7 +77,7 @@ func CreateUserRoles(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidRole(database.DB, req.RoleID) {
+	if !constants.IsValidRole(req.RoleID) {
 		render.Render(w, r, utils.ErrInvalidRole)
 		return
 	}
@@ -166,7 +167,7 @@ func UpdateUserRole(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidRole(database.DB, req.RoleID) {
+	if !constants.IsValidRole(req.RoleID) {
 		render.Render(w, r, utils.ErrInvalidRole)
 		return
 	}
@@ -211,7 +212,7 @@ func PatchUserRole(w http.ResponseWriter, r *http.Request) {
 		userRole.CID = req.CID
 	}
 	if req.RoleID != "" {
-		if !models.IsValidRole(database.DB, req.RoleID) {
+		if !constants.IsValidRole(req.RoleID) {
 			render.Render(w, r, utils.ErrInvalidRequest(errors.New("invalid role")))
 			return
 		}
