@@ -9,7 +9,7 @@ import (
 type UserRole struct {
 	ID         uint             `json:"id" gorm:"primaryKey" example:"1"`
 	CID        uint             `json:"cid" example:"1293257"`
-	RoleID     constants.RoleID `json:"role" example:"ATM"`
+	RoleID     constants.RoleID `json:"role" gorm:"type:varchar(10)" example:"ATM"`
 	FacilityID string           `json:"facility_id" example:"ZDV"`
 	CreatedAt  time.Time        `json:"created_at" example:"2021-01-01T00:00:00Z"`
 	UpdatedAt  time.Time        `json:"updated_at" example:"2021-01-01T00:00:00Z"`
@@ -49,4 +49,30 @@ func GetAllUserRolesByRoleID(db *gorm.DB, roleID string) ([]UserRole, error) {
 func GetAllUserRolesByFacilityID(db *gorm.DB, facilityID string) ([]UserRole, error) {
 	var userRoles []UserRole
 	return userRoles, db.Where("facility_id = ?", facilityID).Find(&userRoles).Error
+}
+
+func CanModifyRole(user *User, role constants.RoleID) bool {
+	if _, ok := constants.Roles[role]; !ok {
+		return false
+	}
+
+	return HasRoleList(user, constants.Roles[role].RolesCanAdd)
+}
+
+func HasRoleList(user *User, roles []constants.RoleID) bool {
+	for _, role := range roles {
+		if HasRole(user, role) {
+			return true
+		}
+	}
+	return false
+}
+
+func HasRole(user *User, role constants.RoleID) bool {
+	for _, r := range user.Roles {
+		if r.RoleID == role {
+			return true
+		}
+	}
+	return false
 }

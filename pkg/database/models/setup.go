@@ -22,7 +22,6 @@ func AutoMigrate(db *gorm.DB) {
 		&RosterRequest{},
 		&UserFlag{},
 		&UserRole{},
-		&Role{},
 	)
 	if err != nil {
 		log.Fatal("[Database] Migration Error:", err)

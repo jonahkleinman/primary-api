@@ -1,7 +1,6 @@
 package constants
 
 import (
-	"github.com/VATUSA/primary-api/pkg/database/models"
 	"slices"
 )
 
@@ -443,32 +442,6 @@ var (
 
 func (r RoleID) DisplayName() string {
 	return Roles[r].Name
-}
-
-func CanModifyRole(user *models.User, role RoleID) bool {
-	if _, ok := Roles[role]; !ok {
-		return false
-	}
-
-	return HasRoleList(user, Roles[role].RolesCanAdd)
-}
-
-func HasRoleList(user *models.User, roles []RoleID) bool {
-	for _, role := range roles {
-		if HasRole(user, role) {
-			return true
-		}
-	}
-	return false
-}
-
-func HasRole(user *models.User, role RoleID) bool {
-	for _, r := range user.Roles {
-		if r.RoleID == role {
-			return true
-		}
-	}
-	return false
 }
 
 func (r RoleID) isFacilityStaff() bool {

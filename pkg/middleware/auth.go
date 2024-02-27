@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"encoding/json"
+	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"net/http"
 )
@@ -17,7 +18,7 @@ func NotGuest(next http.Handler) http.Handler {
 	})
 }
 
-func HasRoles(roles ...string) func(http.Handler) http.Handler {
+func HasRoles(roles ...constants.RoleID) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			user := GetSelfUser(r)
@@ -46,7 +47,7 @@ func HasAPIKey(next http.Handler) http.Handler {
 	})
 }
 
-func HasRoleInFacility(w http.ResponseWriter, r *http.Request, facility string, role ...string) bool {
+func HasRoleInFacility(w http.ResponseWriter, r *http.Request, facility string, role ...constants.RoleID) bool {
 	user := GetSelfUser(r)
 
 	for _, userRole := range user.Roles {
