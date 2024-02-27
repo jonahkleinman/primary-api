@@ -3,7 +3,6 @@ package news
 import (
 	"errors"
 	"fmt"
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -72,7 +71,7 @@ func CreateNews(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidFacility(database.DB, data.Facility) {
+	if !models.IsValidFacility(data.Facility) {
 		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
@@ -84,7 +83,7 @@ func CreateNews(w http.ResponseWriter, r *http.Request) {
 		CreatedBy:   "System",
 	}
 
-	if err := news.Create(database.DB); err != nil {
+	if err := news.Create(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -121,7 +120,7 @@ func GetNews(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /news [get]
 func ListNews(w http.ResponseWriter, r *http.Request) {
-	news, err := models.GetAllNews(database.DB)
+	news, err := models.GetAllNews()
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
@@ -160,7 +159,7 @@ func UpdateNews(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidFacility(database.DB, req.Facility) {
+	if !models.IsValidFacility(req.Facility) {
 		render.Render(w, r, utils.ErrInvalidRequest(errors.New("invalid facility")))
 		return
 	}
@@ -170,7 +169,7 @@ func UpdateNews(w http.ResponseWriter, r *http.Request) {
 	news.Description = req.Description
 	news.UpdatedBy = "System"
 
-	if err := news.Update(database.DB); err != nil {
+	if err := news.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -201,7 +200,7 @@ func PatchNews(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if req.Facility != "" {
-		if !models.IsValidFacility(database.DB, req.Facility) {
+		if !models.IsValidFacility(req.Facility) {
 			render.Render(w, r, utils.ErrInvalidRequest(errors.New("invalid facility")))
 			return
 		}
@@ -217,7 +216,7 @@ func PatchNews(w http.ResponseWriter, r *http.Request) {
 
 	news.UpdatedBy = "System"
 
-	if err := news.Update(database.DB); err != nil {
+	if err := news.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -237,7 +236,7 @@ func PatchNews(w http.ResponseWriter, r *http.Request) {
 // @Router /news/{id} [delete]
 func DeleteNews(w http.ResponseWriter, r *http.Request) {
 	news := GetNewsCtx(r)
-	if err := news.Delete(database.DB); err != nil {
+	if err := news.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}

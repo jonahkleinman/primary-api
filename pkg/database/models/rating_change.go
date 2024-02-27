@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/VATUSA/primary-api/pkg/database"
 	"gorm.io/gorm"
 	"time"
 )
@@ -15,28 +16,28 @@ type RatingChange struct {
 	UpdatedAt    time.Time `json:"updated_at" example:"2021-01-01T00:00:00Z"`
 }
 
-func (rc *RatingChange) Create(db *gorm.DB) error {
-	return db.Create(rc).Error
+func (rc *RatingChange) Create() error {
+	return database.DB.Create(rc).Error
 }
 
-func (rc *RatingChange) Update(db *gorm.DB) error {
-	return db.Save(rc).Error
+func (rc *RatingChange) Update() error {
+	return database.DB.Save(rc).Error
 }
 
-func (rc *RatingChange) Delete(db *gorm.DB) error {
-	return db.Delete(rc).Error
+func (rc *RatingChange) Delete() error {
+	return database.DB.Delete(rc).Error
 }
 
-func (rc *RatingChange) Get(db *gorm.DB) error {
-	return db.Where("id = ?", rc.ID).First(rc).Error
+func (rc *RatingChange) Get() error {
+	return database.DB.Where("id = ?", rc.ID).First(rc).Error
 }
 
-func GetAllRatingChanges(db *gorm.DB) ([]RatingChange, error) {
+func GetAllRatingChanges() ([]RatingChange, error) {
 	var ratingChanges []RatingChange
-	return ratingChanges, db.Find(&ratingChanges).Error
+	return ratingChanges, database.DB.Find(&ratingChanges).Error
 }
 
 func GetAllRatingChangesByCID(db *gorm.DB, cid uint) ([]RatingChange, error) {
 	var ratingChanges []RatingChange
-	return ratingChanges, db.Where("cid = ?", cid).Find(&ratingChanges).Error
+	return ratingChanges, database.DB.Where("cid = ?", cid).Find(&ratingChanges).Error
 }

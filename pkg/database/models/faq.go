@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/VATUSA/primary-api/pkg/database"
 	"gorm.io/gorm"
 	"time"
 )
@@ -17,33 +18,33 @@ type FAQ struct {
 	UpdatedBy uint      `json:"updated_by" example:"1293257"`
 }
 
-func (f *FAQ) Create(db *gorm.DB) error {
-	return db.Create(f).Error
+func (f *FAQ) Create() error {
+	return database.DB.Create(f).Error
 }
 
-func (f *FAQ) Update(db *gorm.DB) error {
-	return db.Save(f).Error
+func (f *FAQ) Update() error {
+	return database.DB.Save(f).Error
 }
 
-func (f *FAQ) Delete(db *gorm.DB) error {
-	return db.Delete(f).Error
+func (f *FAQ) Delete() error {
+	return database.DB.Delete(f).Error
 }
 
-func (f *FAQ) Get(db *gorm.DB) error {
-	return db.Where("id = ?", f.ID).First(f).Error
+func (f *FAQ) Get() error {
+	return database.DB.Where("id = ?", f.ID).First(f).Error
 }
 
-func GetAllFAQ(db *gorm.DB) ([]FAQ, error) {
+func GetAllFAQ() ([]FAQ, error) {
 	var faq []FAQ
-	return faq, db.Find(&faq).Error
+	return faq, database.DB.Find(&faq).Error
 }
 
 func GetAllFAQByCategory(db *gorm.DB, category string) ([]FAQ, error) {
 	var faq []FAQ
-	return faq, db.Where("category = ?", category).Find(&faq).Error
+	return faq, database.DB.Where("category = ?", category).Find(&faq).Error
 }
 
 func GetAllFAQByFacility(db *gorm.DB, facility string) ([]FAQ, error) {
 	var faq []FAQ
-	return faq, db.Where("facility = ?", facility).Find(&faq).Error
+	return faq, database.DB.Where("facility = ?", facility).Find(&faq).Error
 }

@@ -2,7 +2,6 @@ package roster
 
 import (
 	"errors"
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -77,12 +76,12 @@ func CreateRoster(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, data.CID) {
+	if !models.IsValidUser(data.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
-	if !models.IsValidFacility(database.DB, data.Facility) {
+	if !models.IsValidFacility(data.Facility) {
 		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
@@ -108,7 +107,7 @@ func CreateRoster(w http.ResponseWriter, r *http.Request) {
 		Instructor: data.Instructor,
 	}
 
-	if err := roster.Create(database.DB); err != nil {
+	if err := roster.Create(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
@@ -146,7 +145,7 @@ func GetRoster(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /roster [get]
 func ListRoster(w http.ResponseWriter, r *http.Request) {
-	rosters, err := models.GetAllRosters(database.DB)
+	rosters, err := models.GetAllRosters()
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
@@ -184,12 +183,12 @@ func UpdateRoster(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, data.CID) {
+	if !models.IsValidUser(data.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
-	if !models.IsValidFacility(database.DB, data.Facility) {
+	if !models.IsValidFacility(data.Facility) {
 		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
@@ -213,7 +212,7 @@ func UpdateRoster(w http.ResponseWriter, r *http.Request) {
 	roster.Mentor = data.Mentor
 	roster.Instructor = data.Instructor
 
-	if err := roster.Update(database.DB); err != nil {
+	if err := roster.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -235,7 +234,7 @@ func UpdateRoster(w http.ResponseWriter, r *http.Request) {
 func DeleteRoster(w http.ResponseWriter, r *http.Request) {
 	roster := GetRosterCtx(r)
 
-	if err := roster.Delete(database.DB); err != nil {
+	if err := roster.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}

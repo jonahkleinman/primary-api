@@ -1,7 +1,6 @@
 package action_log
 
 import (
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -68,7 +67,7 @@ func CreateActionLogEntry(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, data.CID) {
+	if !models.IsValidUser(data.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
@@ -79,7 +78,7 @@ func CreateActionLogEntry(w http.ResponseWriter, r *http.Request) {
 		CreatedBy: "System",
 	}
 
-	if err := ale.Create(database.DB); err != nil {
+	if err := ale.Create(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -117,7 +116,7 @@ func GetActionLog(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /action-log [get]
 func ListActionLog(w http.ResponseWriter, r *http.Request) {
-	ale, err := models.GetAllActionLogEntries(database.DB)
+	ale, err := models.GetAllActionLogEntries()
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
@@ -156,7 +155,7 @@ func UpdateActionLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, data.CID) {
+	if !models.IsValidUser(data.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
@@ -165,7 +164,7 @@ func UpdateActionLog(w http.ResponseWriter, r *http.Request) {
 	ale.Entry = data.Entry
 	ale.UpdatedBy = "System"
 
-	if err := ale.Update(database.DB); err != nil {
+	if err := ale.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -196,7 +195,7 @@ func PatchActionLog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if data.CID != 0 {
-		if !models.IsValidUser(database.DB, data.CID) {
+		if !models.IsValidUser(data.CID) {
 			render.Render(w, r, utils.ErrInvalidCID)
 			return
 		}
@@ -207,7 +206,7 @@ func PatchActionLog(w http.ResponseWriter, r *http.Request) {
 	}
 	ale.UpdatedBy = "System"
 
-	if err := ale.Update(database.DB); err != nil {
+	if err := ale.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -229,7 +228,7 @@ func PatchActionLog(w http.ResponseWriter, r *http.Request) {
 func DeleteActionLog(w http.ResponseWriter, r *http.Request) {
 	ale := GetActionLogCtx(r)
 
-	if err := ale.Delete(database.DB); err != nil {
+	if err := ale.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}

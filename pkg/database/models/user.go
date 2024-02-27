@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/VATUSA/primary-api/pkg/database"
 	"gorm.io/gorm"
 	"strings"
 	"time"
@@ -32,33 +33,33 @@ type User struct {
 	UpdatedAt            time.Time              `json:"updated_at" example:"2021-01-01T00:00:00Z"`
 }
 
-func (u *User) Create(db *gorm.DB) error {
-	return db.Create(u).Error
+func (u *User) Create() error {
+	return database.DB.Create(u).Error
 }
 
-func (u *User) Update(db *gorm.DB) error {
-	return db.Save(u).Error
+func (u *User) Update() error {
+	return database.DB.Save(u).Error
 }
 
-func (u *User) Delete(db *gorm.DB) error {
-	return db.Delete(u).Error
+func (u *User) Delete() error {
+	return database.DB.Delete(u).Error
 }
 
-func (u *User) Get(db *gorm.DB) error {
+func (u *User) Get() error {
 	if u.Email != "" {
-		return db.Where("email = ?", u.Email).Preload("Roles").First(u).Error
+		return database.DB.Where("email = ?", u.Email).Preload("Roles").First(u).Error
 	}
 
 	if u.DiscordID != "" {
-		return db.Where("discord_id = ?", u.DiscordID).Preload("Roles").First(u).Error
+		return database.DB.Where("discord_id = ?", u.DiscordID).Preload("Roles").First(u).Error
 	}
 
-	return db.Where("c_id = ?", u.CID).Preload("Roles").First(u).Error
+	return database.DB.Where("c_id = ?", u.CID).Preload("Roles").First(u).Error
 }
 
-func GetAllUsers(db *gorm.DB) ([]User, error) {
+func GetAllUsers() ([]User, error) {
 	var users []User
-	return users, db.Find(&users).Error
+	return users, database.DB.Find(&users).Error
 }
 
 func SearchUsersByName(db *gorm.DB, query string) ([]User, error) {
@@ -69,7 +70,7 @@ func SearchUsersByName(db *gorm.DB, query string) ([]User, error) {
 
 	// Using LIKE condition for case-insensitive partial matching on both first name and last name
 	for _, part := range queryParts {
-		if err := db.Where("lower(first_name) LIKE ?", "%"+strings.ToLower(part)+"%").
+		if err := database.DB.Where("lower(first_name) LIKE ?", "%"+strings.ToLower(part)+"%").
 			Or("lower(last_name) LIKE ?", "%"+strings.ToLower(part)+"%").
 			Or("lower(preferred_name) LIKE ?", "%"+strings.ToLower(part)+"%").
 			Find(&users).Error; err != nil {
@@ -80,9 +81,9 @@ func SearchUsersByName(db *gorm.DB, query string) ([]User, error) {
 	return users, nil
 }
 
-func IsValidUser(db *gorm.DB, cid uint) bool {
+func IsValidUser(cid uint) bool {
 	var user User
-	if err := db.Where("c_id = ?", cid).First(&user).Error; err != nil {
+	if err := database.DB.Where("c_id = ?", cid).First(&user).Error; err != nil {
 		return false
 	}
 	return true

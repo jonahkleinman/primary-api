@@ -22,7 +22,7 @@ func main() {
 
 	storage.PublicBucket = bucket
 	database.DB = database.Connect(cfg.Database)
-	models.AutoMigrate(database.DB)
+	models.AutoMigrate()
 
 	r := gochi.New(cfg)
 	internal.Router(r, cfg)

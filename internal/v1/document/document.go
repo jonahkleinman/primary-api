@@ -3,7 +3,6 @@ package document
 import (
 	"errors"
 	"fmt"
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/database/types"
 	"github.com/VATUSA/primary-api/pkg/storage"
@@ -78,7 +77,7 @@ func CreateDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 		return
 	}
 
-	currentDocs, err := models.GetAllDocumentsByFacilityAndCategory(database.DB, data.Facility, types.DocumentCategory(data.Category))
+	currentDocs, err := models.GetAllDocumentsByFacilityAndCategory(data.Facility, types.DocumentCategory(data.Category))
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
@@ -116,7 +115,7 @@ func CreateDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 		URL:         path.Join(endpoint, directory, filename),
 	}
 
-	if err := document.Create(database.DB); err != nil {
+	if err := document.Create(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 
 		err := storage.PublicBucket.Delete(directory, filename)
@@ -158,7 +157,7 @@ func GetDocument(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /documents [get]
 func ListDocuments(w http.ResponseWriter, r *http.Request) {
-	docs, err := models.GetAllDocuments(database.DB)
+	docs, err := models.GetAllDocuments()
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
@@ -189,7 +188,7 @@ func ListDocumentsByFac(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	docs, err := models.GetAllDocumentsByFacility(database.DB, facId)
+	docs, err := models.GetAllDocumentsByFacility(facId)
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
@@ -222,7 +221,7 @@ func ListDocumentsByFacByCat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	docs, err := models.GetAllDocumentsByFacilityAndCategory(database.DB, facId, types.DocumentCategory(cat))
+	docs, err := models.GetAllDocumentsByFacilityAndCategory(facId, types.DocumentCategory(cat))
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
@@ -268,7 +267,7 @@ func UpdateDocument(w http.ResponseWriter, r *http.Request) {
 	doc.Description = data.Description
 	doc.Category = types.DocumentCategory(data.Category)
 
-	if err := doc.Update(database.DB); err != nil {
+	if err := doc.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -313,7 +312,7 @@ func PatchDocument(w http.ResponseWriter, r *http.Request) {
 		doc.Category = types.DocumentCategory(data.Category)
 	}
 
-	if err := doc.Update(database.DB); err != nil {
+	if err := doc.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -343,7 +342,7 @@ func DeleteDocument(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := doc.Delete(database.DB); err != nil {
+	if err := doc.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -395,7 +394,7 @@ func UploadDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 
 	// Update the URL in the database
 	data.URL = path.Join(endpoint, directory, filename)
-	if err := data.Update(database.DB); err != nil {
+	if err := data.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}

@@ -2,7 +2,6 @@ package user_flag
 
 import (
 	"errors"
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -78,7 +77,7 @@ func CreateUserFlag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, req.CID) {
+	if !models.IsValidUser(req.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
@@ -95,7 +94,7 @@ func CreateUserFlag(w http.ResponseWriter, r *http.Request) {
 		NoTrainingLogEntryID:     req.NoTrainingLogEntryID,
 	}
 
-	if err := userFlag.Create(database.DB); err != nil {
+	if err := userFlag.Create(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
@@ -131,7 +130,7 @@ func GetUserFlag(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /user-flag [get]
 func ListUserFlag(w http.ResponseWriter, r *http.Request) {
-	flags, err := models.GetAllFlags(database.DB)
+	flags, err := models.GetAllFlags()
 	if err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
@@ -167,7 +166,7 @@ func UpdateUserFlag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, req.CID) {
+	if !models.IsValidUser(req.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
@@ -183,7 +182,7 @@ func UpdateUserFlag(w http.ResponseWriter, r *http.Request) {
 	userFlag.NoTraining = req.NoTraining
 	userFlag.NoTrainingLogEntryID = req.NoTrainingLogEntryID
 
-	if err := userFlag.Update(database.DB); err != nil {
+	if err := userFlag.Update(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
@@ -213,7 +212,7 @@ func PatchUserFlag(w http.ResponseWriter, r *http.Request) {
 
 	userFlag := GetUserFlagCtx(r)
 	if req.CID != 0 {
-		if !models.IsValidUser(database.DB, req.CID) {
+		if !models.IsValidUser(req.CID) {
 			render.Render(w, r, utils.ErrInvalidCID)
 			return
 		}
@@ -244,7 +243,7 @@ func PatchUserFlag(w http.ResponseWriter, r *http.Request) {
 		userFlag.NoTrainingLogEntryID = req.NoTrainingLogEntryID
 	}
 
-	if err := userFlag.Update(database.DB); err != nil {
+	if err := userFlag.Update(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
@@ -265,7 +264,7 @@ func PatchUserFlag(w http.ResponseWriter, r *http.Request) {
 // @Router /user-flag/{cid} [delete]
 func DeleteUserFlag(w http.ResponseWriter, r *http.Request) {
 	userFlag := GetUserFlagCtx(r)
-	if err := userFlag.Delete(database.DB); err != nil {
+	if err := userFlag.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}

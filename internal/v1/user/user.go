@@ -2,7 +2,6 @@ package user
 
 import (
 	"errors"
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -90,7 +89,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		ControllerRating: req.ControllerRating,
 		DiscordID:        req.DiscordID,
 	}
-	if err := user.Create(database.DB); err != nil {
+	if err := user.Create(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -128,7 +127,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /user [get]
 func ListUsers(w http.ResponseWriter, r *http.Request) {
-	users, err := models.GetAllUsers(database.DB)
+	users, err := models.GetAllUsers()
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
@@ -176,7 +175,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	user.ControllerRating = req.ControllerRating
 	user.DiscordID = req.DiscordID
 
-	if err := user.Update(database.DB); err != nil {
+	if err := user.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -224,7 +223,7 @@ func PatchUser(w http.ResponseWriter, r *http.Request) {
 		user.DiscordID = req.DiscordID
 	}
 
-	if err := user.Update(database.DB); err != nil {
+	if err := user.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -246,7 +245,7 @@ func PatchUser(w http.ResponseWriter, r *http.Request) {
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	user := GetUserCtx(r)
 
-	if err := user.Delete(database.DB); err != nil {
+	if err := user.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}

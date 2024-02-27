@@ -2,7 +2,6 @@ package rating_change
 
 import (
 	"errors"
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -71,7 +70,7 @@ func CreateRatingChange(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, data.CID) {
+	if !models.IsValidUser(data.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
@@ -83,7 +82,7 @@ func CreateRatingChange(w http.ResponseWriter, r *http.Request) {
 		CreatedByCID: data.CreatedByCID,
 	}
 
-	if err := rc.Create(database.DB); err != nil {
+	if err := rc.Create(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
@@ -121,7 +120,7 @@ func GetRatingChange(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /rating-change [get]
 func ListRatingChanges(w http.ResponseWriter, r *http.Request) {
-	rc, err := models.GetAllRatingChanges(database.DB)
+	rc, err := models.GetAllRatingChanges()
 	if err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
@@ -160,7 +159,7 @@ func UpdateRatingChange(w http.ResponseWriter, r *http.Request) {
 
 	rc := GetRatingChangeCtx(r)
 
-	if !models.IsValidUser(database.DB, data.CID) {
+	if !models.IsValidUser(data.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
@@ -170,7 +169,7 @@ func UpdateRatingChange(w http.ResponseWriter, r *http.Request) {
 	rc.NewRating = data.NewRating
 	rc.CreatedByCID = data.CreatedByCID
 
-	if err := rc.Update(database.DB); err != nil {
+	if err := rc.Update(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
@@ -200,7 +199,7 @@ func PatchRatingChange(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if data.CID != 0 {
-		if !models.IsValidUser(database.DB, data.CID) {
+		if !models.IsValidUser(data.CID) {
 			render.Render(w, r, utils.ErrInvalidCID)
 			return
 		}
@@ -216,7 +215,7 @@ func PatchRatingChange(w http.ResponseWriter, r *http.Request) {
 		rc.CreatedByCID = data.CreatedByCID
 	}
 
-	if err := rc.Update(database.DB); err != nil {
+	if err := rc.Update(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
@@ -237,7 +236,7 @@ func PatchRatingChange(w http.ResponseWriter, r *http.Request) {
 // @Router /rating-change/{id} [delete]
 func DeleteRatingChange(w http.ResponseWriter, r *http.Request) {
 	rc := GetRatingChangeCtx(r)
-	if err := rc.Delete(database.DB); err != nil {
+	if err := rc.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}

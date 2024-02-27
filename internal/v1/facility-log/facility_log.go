@@ -2,7 +2,6 @@ package facility_log
 
 import (
 	"errors"
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -69,7 +68,7 @@ func CreateFacilityLogEntry(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidFacility(database.DB, data.Facility) {
+	if !models.IsValidFacility(data.Facility) {
 		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
@@ -80,7 +79,7 @@ func CreateFacilityLogEntry(w http.ResponseWriter, r *http.Request) {
 		CreatedBy: "System",
 	}
 
-	if err := fle.Create(database.DB); err != nil {
+	if err := fle.Create(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -116,7 +115,7 @@ func GetFacilityLog(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /facility-log [get]
 func ListFacilityLog(w http.ResponseWriter, r *http.Request) {
-	fle, err := models.GetAllFacilityLogEntries(database.DB)
+	fle, err := models.GetAllFacilityLogEntries()
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
@@ -155,7 +154,7 @@ func UpdateFacilityLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidFacility(database.DB, data.Facility) {
+	if !models.IsValidFacility(data.Facility) {
 		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
@@ -163,7 +162,7 @@ func UpdateFacilityLog(w http.ResponseWriter, r *http.Request) {
 	fle.Facility = data.Facility
 	fle.Entry = data.Entry
 
-	if err := fle.Update(database.DB); err != nil {
+	if err := fle.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -194,7 +193,7 @@ func PatchFacilityLog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if data.Facility != "" {
-		if !models.IsValidFacility(database.DB, data.Facility) {
+		if !models.IsValidFacility(data.Facility) {
 			render.Render(w, r, utils.ErrInvalidFacility)
 			return
 		}
@@ -205,7 +204,7 @@ func PatchFacilityLog(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	if err := fle.Update(database.DB); err != nil {
+	if err := fle.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -226,7 +225,7 @@ func PatchFacilityLog(w http.ResponseWriter, r *http.Request) {
 func DeleteFacilityLog(w http.ResponseWriter, r *http.Request) {
 	fle := GetFacilityLogCtx(r)
 
-	if err := fle.Delete(database.DB); err != nil {
+	if err := fle.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}

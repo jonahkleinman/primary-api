@@ -3,7 +3,6 @@ package document
 import (
 	"context"
 	"github.com/VATUSA/primary-api/pkg/config"
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/go-chi/chi/v5"
 	"net/http"
@@ -49,7 +48,7 @@ func Ctx(next http.Handler) http.Handler {
 		}
 
 		document := &models.Document{ID: uint(DocumentID)}
-		if err = document.Get(database.DB); err != nil {
+		if err = document.Get(); err != nil {
 			http.Error(w, "Invalid request", http.StatusBadRequest)
 			return
 		}

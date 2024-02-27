@@ -2,7 +2,6 @@ package disciplinary_log
 
 import (
 	"errors"
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -70,7 +69,7 @@ func CreateDisciplinaryLogEntry(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, data.CID) {
+	if !models.IsValidUser(data.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
@@ -87,7 +86,7 @@ func CreateDisciplinaryLogEntry(w http.ResponseWriter, r *http.Request) {
 		dle.VATUSAOnly = false
 	}
 
-	if err := dle.Create(database.DB); err != nil {
+	if err := dle.Create(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -124,7 +123,7 @@ func GetDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /disciplinary-log [get]
 func ListDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
-	dle, err := models.GetAllDisciplinaryLogEntries(database.DB, true)
+	dle, err := models.GetAllDisciplinaryLogEntries(true)
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
@@ -161,7 +160,7 @@ func UpdateDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, data.CID) {
+	if !models.IsValidUser(data.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
@@ -173,7 +172,7 @@ func UpdateDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 		dle.VATUSAOnly = true
 	}
 
-	if err := dle.Update(database.DB); err != nil {
+	if err := dle.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -202,7 +201,7 @@ func PatchDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if data.CID != 0 {
-		if !models.IsValidUser(database.DB, data.CID) {
+		if !models.IsValidUser(data.CID) {
 			render.Render(w, r, utils.ErrInvalidCID)
 			return
 		}
@@ -217,7 +216,7 @@ func PatchDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 		dle.VATUSAOnly = true
 	}
 
-	if err := dle.Update(database.DB); err != nil {
+	if err := dle.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -237,7 +236,7 @@ func PatchDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 // @Router /disciplinary-log/{id} [delete]
 func DeleteDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	dle := GetDisciplinaryLogCtx(r)
-	if err := dle.Delete(database.DB); err != nil {
+	if err := dle.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}

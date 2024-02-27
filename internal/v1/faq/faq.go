@@ -1,7 +1,6 @@
 package faq
 
 import (
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -70,7 +69,7 @@ func CreateFAQ(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidFacility(database.DB, data.Facility) {
+	if !models.IsValidFacility(data.Facility) {
 		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
@@ -83,7 +82,7 @@ func CreateFAQ(w http.ResponseWriter, r *http.Request) {
 		CreatedBy: 1,
 	}
 
-	if err := faq.Create(database.DB); err != nil {
+	if err := faq.Create(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -121,7 +120,7 @@ func GetFAQ(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /faq [get]
 func ListFAQ(w http.ResponseWriter, r *http.Request) {
-	faqs, err := models.GetAllFAQ(database.DB)
+	faqs, err := models.GetAllFAQ()
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
@@ -160,7 +159,7 @@ func UpdateFAQ(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidFacility(database.DB, data.Facility) {
+	if !models.IsValidFacility(data.Facility) {
 		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
@@ -170,7 +169,7 @@ func UpdateFAQ(w http.ResponseWriter, r *http.Request) {
 	faq.Answer = data.Answer
 	faq.Category = data.Category
 
-	if err := faq.Update(database.DB); err != nil {
+	if err := faq.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -201,7 +200,7 @@ func PatchFAQ(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if data.Facility != "" {
-		if !models.IsValidFacility(database.DB, data.Facility) {
+		if !models.IsValidFacility(data.Facility) {
 			render.Render(w, r, utils.ErrInvalidFacility)
 			return
 		}
@@ -217,7 +216,7 @@ func PatchFAQ(w http.ResponseWriter, r *http.Request) {
 		faq.Category = data.Category
 	}
 
-	if err := faq.Update(database.DB); err != nil {
+	if err := faq.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -238,7 +237,7 @@ func PatchFAQ(w http.ResponseWriter, r *http.Request) {
 func DeleteFAQ(w http.ResponseWriter, r *http.Request) {
 	faq := GetFAQCtx(r)
 
-	if err := faq.Delete(database.DB); err != nil {
+	if err := faq.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}

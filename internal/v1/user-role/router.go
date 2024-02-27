@@ -2,7 +2,6 @@ package user_role
 
 import (
 	"context"
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/go-chi/chi/v5"
 	"net/http"
@@ -35,7 +34,7 @@ func Ctx(next http.Handler) http.Handler {
 		}
 
 		userRole := &models.UserRole{ID: uint(UserRoleID)}
-		if err = userRole.Get(database.DB); err != nil {
+		if err = userRole.Get(); err != nil {
 			http.Error(w, "Invalid request", http.StatusBadRequest)
 			return
 		}

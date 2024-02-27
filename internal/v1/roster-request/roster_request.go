@@ -2,7 +2,6 @@ package roster_request
 
 import (
 	"errors"
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/database/types"
 	"github.com/VATUSA/primary-api/pkg/utils"
@@ -73,12 +72,12 @@ func CreateRosterRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, req.CID) {
+	if !models.IsValidUser(req.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
-	if !models.IsValidFacility(database.DB, req.Facility) {
+	if !models.IsValidFacility(req.Facility) {
 		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
@@ -91,7 +90,7 @@ func CreateRosterRequest(w http.ResponseWriter, r *http.Request) {
 		Reason:      req.Reason,
 	}
 
-	if err := rosterRequest.Create(database.DB); err != nil {
+	if err := rosterRequest.Create(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
@@ -129,7 +128,7 @@ func GetRosterRequest(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /roster-request [get]
 func ListRosterRequest(w http.ResponseWriter, r *http.Request) {
-	rosterRequests, err := models.GetAllRosterRequests(database.DB)
+	rosterRequests, err := models.GetAllRosterRequests()
 	if err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
@@ -167,12 +166,12 @@ func UpdateRosterRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, req.CID) {
+	if !models.IsValidUser(req.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
-	if !models.IsValidFacility(database.DB, req.Facility) {
+	if !models.IsValidFacility(req.Facility) {
 		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
@@ -195,7 +194,7 @@ func UpdateRosterRequest(w http.ResponseWriter, r *http.Request) {
 			roster.Home = true
 		}
 
-		if err := roster.Create(database.DB); err != nil {
+		if err := roster.Create(); err != nil {
 			render.Render(w, r, utils.ErrInvalidRequest(err))
 			return
 		}
@@ -207,7 +206,7 @@ func UpdateRosterRequest(w http.ResponseWriter, r *http.Request) {
 	req.Status = data.Status
 	req.Reason = data.Reason
 
-	if err := req.Update(database.DB); err != nil {
+	if err := req.Update(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
@@ -228,7 +227,7 @@ func UpdateRosterRequest(w http.ResponseWriter, r *http.Request) {
 // @Router /roster-request/{id} [delete]
 func DeleteRosterRequest(w http.ResponseWriter, r *http.Request) {
 	req := GetRosterRequestCtx(r)
-	if err := req.Delete(database.DB); err != nil {
+	if err := req.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}

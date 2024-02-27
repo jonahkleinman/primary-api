@@ -1,8 +1,8 @@
 package models
 
 import (
+	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/types"
-	"gorm.io/gorm"
 	"time"
 )
 
@@ -19,38 +19,38 @@ type Document struct {
 	UpdatedBy   uint                   `json:"updated_by" example:"1293257"`
 }
 
-func (d *Document) Create(db *gorm.DB) error {
-	return db.Create(d).Error
+func (d *Document) Create() error {
+	return database.DB.Create(d).Error
 }
 
-func (d *Document) Update(db *gorm.DB) error {
-	return db.Save(d).Error
+func (d *Document) Update() error {
+	return database.DB.Save(d).Error
 }
 
-func (d *Document) Delete(db *gorm.DB) error {
-	return db.Delete(d).Error
+func (d *Document) Delete() error {
+	return database.DB.Delete(d).Error
 }
 
-func (d *Document) Get(db *gorm.DB) error {
-	return db.Where("id = ?", d.ID).First(d).Error
+func (d *Document) Get() error {
+	return database.DB.Where("id = ?", d.ID).First(d).Error
 }
 
-func GetAllDocuments(db *gorm.DB) ([]Document, error) {
+func GetAllDocuments() ([]Document, error) {
 	var documents []Document
-	return documents, db.Find(&documents).Error
+	return documents, database.DB.Find(&documents).Error
 }
 
-func GetAllDocumentsByCategory(db *gorm.DB, category types.DocumentCategory) ([]Document, error) {
+func GetAllDocumentsByCategory(category types.DocumentCategory) ([]Document, error) {
 	var documents []Document
-	return documents, db.Where("category = ?", category).Find(&documents).Error
+	return documents, database.DB.Where("category = ?", category).Find(&documents).Error
 }
 
-func GetAllDocumentsByFacility(db *gorm.DB, facility string) ([]Document, error) {
+func GetAllDocumentsByFacility(facility string) ([]Document, error) {
 	var documents []Document
-	return documents, db.Where("facility = ?", facility).Find(&documents).Error
+	return documents, database.DB.Where("facility = ?", facility).Find(&documents).Error
 }
 
-func GetAllDocumentsByFacilityAndCategory(db *gorm.DB, facility string, category types.DocumentCategory) ([]Document, error) {
+func GetAllDocumentsByFacilityAndCategory(facility string, category types.DocumentCategory) ([]Document, error) {
 	var documents []Document
-	return documents, db.Where("facility = ? AND category = ?", facility, category).Find(&documents).Error
+	return documents, database.DB.Where("facility = ? AND category = ?", facility, category).Find(&documents).Error
 }

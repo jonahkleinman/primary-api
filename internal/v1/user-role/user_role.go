@@ -3,7 +3,6 @@ package user_role
 import (
 	"errors"
 	"github.com/VATUSA/primary-api/pkg/constants"
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -72,7 +71,7 @@ func CreateUserRoles(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, req.CID) {
+	if !models.IsValidUser(req.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
@@ -88,7 +87,7 @@ func CreateUserRoles(w http.ResponseWriter, r *http.Request) {
 		FacilityID: req.FacilityID,
 	}
 
-	if err := userRole.Create(database.DB); err != nil {
+	if err := userRole.Create(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
@@ -125,7 +124,7 @@ func GetUserRole(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /user-roles [get]
 func ListUserRoles(w http.ResponseWriter, r *http.Request) {
-	userRoles, err := models.GetAllUserRoles(database.DB)
+	userRoles, err := models.GetAllUserRoles()
 	if err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
@@ -162,7 +161,7 @@ func UpdateUserRole(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, req.CID) {
+	if !models.IsValidUser(req.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
@@ -176,7 +175,7 @@ func UpdateUserRole(w http.ResponseWriter, r *http.Request) {
 	userRole.RoleID = req.RoleID
 	userRole.FacilityID = req.FacilityID
 
-	if err := userRole.Update(database.DB); err != nil {
+	if err := userRole.Update(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
@@ -205,7 +204,7 @@ func PatchUserRole(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if req.CID != 0 {
-		if !models.IsValidUser(database.DB, req.CID) {
+		if !models.IsValidUser(req.CID) {
 			render.Render(w, r, utils.ErrInvalidCID)
 			return
 		}
@@ -222,7 +221,7 @@ func PatchUserRole(w http.ResponseWriter, r *http.Request) {
 		userRole.FacilityID = req.FacilityID
 	}
 
-	if err := userRole.Update(database.DB); err != nil {
+	if err := userRole.Update(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
@@ -243,7 +242,7 @@ func PatchUserRole(w http.ResponseWriter, r *http.Request) {
 func DeleteUserRole(w http.ResponseWriter, r *http.Request) {
 	userRole := GetUserRoleCtx(r)
 
-	if err := userRole.Delete(database.DB); err != nil {
+	if err := userRole.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}

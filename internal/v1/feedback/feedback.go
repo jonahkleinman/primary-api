@@ -2,7 +2,6 @@ package feedback
 
 import (
 	"errors"
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/database/types"
 	"github.com/VATUSA/primary-api/pkg/utils"
@@ -77,12 +76,12 @@ func CreateFeedback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, data.ControllerCID) {
+	if !models.IsValidUser(data.ControllerCID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
-	if !models.IsValidFacility(database.DB, data.Facility) {
+	if !models.IsValidFacility(data.Facility) {
 		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
@@ -98,7 +97,7 @@ func CreateFeedback(w http.ResponseWriter, r *http.Request) {
 		Status:        data.Status,
 		Comment:       data.Comment,
 	}
-	if err := f.Create(database.DB); err != nil {
+	if err := f.Create(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -135,7 +134,7 @@ func GetFeedback(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /feedback [get]
 func ListFeedback(w http.ResponseWriter, r *http.Request) {
-	f, err := models.GetAllFeedback(database.DB)
+	f, err := models.GetAllFeedback()
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
@@ -171,12 +170,12 @@ func UpdateFeedback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, data.ControllerCID) {
+	if !models.IsValidUser(data.ControllerCID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
-	if !models.IsValidFacility(database.DB, data.Facility) {
+	if !models.IsValidFacility(data.Facility) {
 		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
@@ -192,7 +191,7 @@ func UpdateFeedback(w http.ResponseWriter, r *http.Request) {
 	f.Status = data.Status
 	f.Comment = data.Comment
 
-	if err := f.Update(database.DB); err != nil {
+	if err := f.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -227,7 +226,7 @@ func PatchFeedback(w http.ResponseWriter, r *http.Request) {
 		f.Callsign = data.Callsign
 	}
 	if data.ControllerCID != 0 {
-		if !models.IsValidUser(database.DB, data.ControllerCID) {
+		if !models.IsValidUser(data.ControllerCID) {
 			render.Render(w, r, utils.ErrInvalidCID)
 			return
 		}
@@ -237,7 +236,7 @@ func PatchFeedback(w http.ResponseWriter, r *http.Request) {
 		f.Position = data.Position
 	}
 	if data.Facility != "" {
-		if !models.IsValidFacility(database.DB, data.Facility) {
+		if !models.IsValidFacility(data.Facility) {
 			render.Render(w, r, utils.ErrInvalidFacility)
 			return
 		}
@@ -256,7 +255,7 @@ func PatchFeedback(w http.ResponseWriter, r *http.Request) {
 		f.Comment = data.Comment
 	}
 
-	if err := f.Update(database.DB); err != nil {
+	if err := f.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -277,7 +276,7 @@ func PatchFeedback(w http.ResponseWriter, r *http.Request) {
 // @Router /feedback/{id} [delete]
 func DeleteFeedback(w http.ResponseWriter, r *http.Request) {
 	f := GetFeedbackCtx(r)
-	if err := f.Delete(database.DB); err != nil {
+	if err := f.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
