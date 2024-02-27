@@ -7,10 +7,12 @@ import (
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	gochi "github.com/VATUSA/primary-api/pkg/go-chi"
 	"github.com/VATUSA/primary-api/pkg/storage"
+	"github.com/joho/godotenv"
 	"net/http"
 )
 
 func main() {
+	_ = godotenv.Load(".env")
 	cfg := config.New()
 
 	bucket, err := storage.NewS3Client(cfg.S3)
