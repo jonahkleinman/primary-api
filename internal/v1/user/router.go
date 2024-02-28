@@ -2,7 +2,6 @@ package user
 
 import (
 	"context"
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/chi/v5"
@@ -39,7 +38,7 @@ func Ctx(next http.Handler) http.Handler {
 		}
 
 		user := &models.User{CID: uint(CID)}
-		err = user.Get(database.DB)
+		err = user.Get()
 		if err != nil {
 			render.Render(w, r, utils.ErrNotFound)
 			return

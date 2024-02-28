@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/VATUSA/primary-api/pkg/database"
 	"gorm.io/gorm"
 	"time"
 )
@@ -20,28 +21,28 @@ type UserFlag struct {
 	UpdatedAt                time.Time `json:"updated_at" example:"2021-01-01T00:00:00Z"`
 }
 
-func (f *UserFlag) Create(db *gorm.DB) error {
-	return db.Create(f).Error
+func (f *UserFlag) Create() error {
+	return database.DB.Create(f).Error
 }
 
-func (f *UserFlag) Update(db *gorm.DB) error {
-	return db.Save(f).Error
+func (f *UserFlag) Update() error {
+	return database.DB.Save(f).Error
 }
 
-func (f *UserFlag) Delete(db *gorm.DB) error {
-	return db.Delete(f).Error
+func (f *UserFlag) Delete() error {
+	return database.DB.Delete(f).Error
 }
 
-func (f *UserFlag) Get(db *gorm.DB) error {
-	return db.Where("id = ?", f.ID).First(f).Error
+func (f *UserFlag) Get() error {
+	return database.DB.Where("id = ?", f.ID).First(f).Error
 }
 
-func GetAllFlags(db *gorm.DB) ([]UserFlag, error) {
+func GetAllFlags() ([]UserFlag, error) {
 	var flags []UserFlag
-	return flags, db.Find(&flags).Error
+	return flags, database.DB.Find(&flags).Error
 }
 
 func GetAllFlagsByCID(db *gorm.DB, cid uint) ([]UserFlag, error) {
 	var flags []UserFlag
-	return flags, db.Where("cid = ?", cid).Find(&flags).Error
+	return flags, database.DB.Where("cid = ?", cid).Find(&flags).Error
 }

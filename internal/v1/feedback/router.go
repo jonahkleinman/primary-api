@@ -2,7 +2,6 @@ package feedback
 
 import (
 	"context"
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/go-chi/chi/v5"
 	"net/http"
@@ -37,7 +36,7 @@ func Ctx(next http.Handler) http.Handler {
 		}
 
 		feedback := &models.Feedback{ID: uint(FeedbackID)}
-		if err = feedback.Get(database.DB); err != nil {
+		if err = feedback.Get(); err != nil {
 			http.Error(w, "Invalid request", http.StatusBadRequest)
 			return
 		}

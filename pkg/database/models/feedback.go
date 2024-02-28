@@ -1,8 +1,8 @@
 package models
 
 import (
+	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/types"
-	"gorm.io/gorm"
 	"time"
 )
 
@@ -25,23 +25,23 @@ type Feedback struct {
 	UpdatedAt     time.Time            `json:"updated_at" example:"2021-01-01T00:00:00Z"`
 }
 
-func (f *Feedback) Create(db *gorm.DB) error {
-	return db.Create(f).Error
+func (f *Feedback) Create() error {
+	return database.DB.Create(f).Error
 }
 
-func (f *Feedback) Update(db *gorm.DB) error {
-	return db.Save(f).Error
+func (f *Feedback) Update() error {
+	return database.DB.Save(f).Error
 }
 
-func (f *Feedback) Delete(db *gorm.DB) error {
-	return db.Delete(f).Error
+func (f *Feedback) Delete() error {
+	return database.DB.Delete(f).Error
 }
 
-func (f *Feedback) Get(db *gorm.DB) error {
-	return db.Where("id = ?", f.ID).First(f).Error
+func (f *Feedback) Get() error {
+	return database.DB.Where("id = ?", f.ID).First(f).Error
 }
 
-func GetAllFeedback(db *gorm.DB) ([]Feedback, error) {
+func GetAllFeedback() ([]Feedback, error) {
 	var feedback []Feedback
-	return feedback, db.Find(&feedback).Error
+	return feedback, database.DB.Find(&feedback).Error
 }

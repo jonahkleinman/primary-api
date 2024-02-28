@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/VATUSA/primary-api/pkg/database"
 	"gorm.io/gorm"
 	"time"
 )
@@ -21,28 +22,28 @@ type ActionLogEntry struct {
 	UpdatedBy string    `json:"updated_by" example:"'1234567' or 'System'"`
 }
 
-func (ale *ActionLogEntry) Create(db *gorm.DB) error {
-	return db.Create(ale).Error
+func (ale *ActionLogEntry) Create() error {
+	return database.DB.Create(ale).Error
 }
 
-func (ale *ActionLogEntry) Update(db *gorm.DB) error {
-	return db.Save(ale).Error
+func (ale *ActionLogEntry) Update() error {
+	return database.DB.Save(ale).Error
 }
 
-func (ale *ActionLogEntry) Delete(db *gorm.DB) error {
-	return db.Delete(ale).Error
+func (ale *ActionLogEntry) Delete() error {
+	return database.DB.Delete(ale).Error
 }
 
-func (ale *ActionLogEntry) Get(db *gorm.DB) error {
-	return db.Where("id = ?", ale.ID).First(ale).Error
+func (ale *ActionLogEntry) Get() error {
+	return database.DB.Where("id = ?", ale.ID).First(ale).Error
 }
 
-func GetAllActionLogEntries(db *gorm.DB) ([]ActionLogEntry, error) {
+func GetAllActionLogEntries() ([]ActionLogEntry, error) {
 	var ale []ActionLogEntry
-	return ale, db.Find(&ale).Error
+	return ale, database.DB.Find(&ale).Error
 }
 
 func GetAllActionLogEntriesByCID(db *gorm.DB, cid uint) ([]ActionLogEntry, error) {
 	var ale []ActionLogEntry
-	return ale, db.Where("cid = ?", cid).Find(&ale).Error
+	return ale, database.DB.Where("cid = ?", cid).Find(&ale).Error
 }

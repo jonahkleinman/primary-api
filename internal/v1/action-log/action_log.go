@@ -1,7 +1,6 @@
 package action_log
 
 import (
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -48,14 +47,14 @@ func NewActionLogEntryListResponse(ale []models.ActionLogEntry) []render.Rendere
 // CreateActionLogEntry godoc
 // @Summary Create a new action log entry
 // @Description Create a new action log entry
-// @Tags action_log
+// @Tags action-log
 // @Accept  json
 // @Produce  json
 // @Param action_log body Request true "Action Log Entry"
 // @Success 201 {object} Response
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /action_log [post]
+// @Router /action-log [post]
 func CreateActionLogEntry(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
@@ -68,7 +67,7 @@ func CreateActionLogEntry(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, data.CID) {
+	if !models.IsValidUser(data.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
@@ -79,7 +78,7 @@ func CreateActionLogEntry(w http.ResponseWriter, r *http.Request) {
 		CreatedBy: "System",
 	}
 
-	if err := ale.Create(database.DB); err != nil {
+	if err := ale.Create(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -91,7 +90,7 @@ func CreateActionLogEntry(w http.ResponseWriter, r *http.Request) {
 // GetActionLog godoc
 // @Summary Get an action log entry
 // @Description Get an action log entry
-// @Tags action_log
+// @Tags action-log
 // @Accept  json
 // @Produce  json
 // @Param id path int true "Action Log Entry ID"
@@ -99,7 +98,7 @@ func CreateActionLogEntry(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 404 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /action_log/{id} [get]
+// @Router /action-log/{id} [get]
 func GetActionLog(w http.ResponseWriter, r *http.Request) {
 	ale := GetActionLogCtx(r)
 
@@ -109,15 +108,15 @@ func GetActionLog(w http.ResponseWriter, r *http.Request) {
 // ListActionLog godoc
 // @Summary List all action log entries
 // @Description List all action log entries
-// @Tags action_log
+// @Tags action-log
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} []Response
-// @Failure 429 {object} utils.ErrResponse
+// @Failure 422 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /action_log [get]
+// @Router /action-log [get]
 func ListActionLog(w http.ResponseWriter, r *http.Request) {
-	ale, err := models.GetAllActionLogEntries(database.DB)
+	ale, err := models.GetAllActionLogEntries()
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
@@ -129,6 +128,19 @@ func ListActionLog(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// UpdateActionLog godoc
+// @Summary Update an action log entry
+// @Description Update an action log entry
+// @Tags action-log
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Action Log Entry ID"
+// @Param action_log body Request true "Action Log Entry"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /action-log/{id} [put]
 func UpdateActionLog(w http.ResponseWriter, r *http.Request) {
 	ale := GetActionLogCtx(r)
 
@@ -143,7 +155,7 @@ func UpdateActionLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, data.CID) {
+	if !models.IsValidUser(data.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
@@ -152,7 +164,7 @@ func UpdateActionLog(w http.ResponseWriter, r *http.Request) {
 	ale.Entry = data.Entry
 	ale.UpdatedBy = "System"
 
-	if err := ale.Update(database.DB); err != nil {
+	if err := ale.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -160,6 +172,19 @@ func UpdateActionLog(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewActionLogEntryResponse(ale))
 }
 
+// PatchActionLog godoc
+// @Summary Patch an action log entry
+// @Description Patch an action log entry
+// @Tags action-log
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Action Log Entry ID"
+// @Param action_log body Request true "Action Log Entry"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /action-log/{id} [patch]
 func PatchActionLog(w http.ResponseWriter, r *http.Request) {
 	ale := GetActionLogCtx(r)
 
@@ -170,7 +195,7 @@ func PatchActionLog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if data.CID != 0 {
-		if !models.IsValidUser(database.DB, data.CID) {
+		if !models.IsValidUser(data.CID) {
 			render.Render(w, r, utils.ErrInvalidCID)
 			return
 		}
@@ -181,7 +206,7 @@ func PatchActionLog(w http.ResponseWriter, r *http.Request) {
 	}
 	ale.UpdatedBy = "System"
 
-	if err := ale.Update(database.DB); err != nil {
+	if err := ale.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -189,10 +214,21 @@ func PatchActionLog(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewActionLogEntryResponse(ale))
 }
 
+// DeleteActionLog godoc
+// @Summary Delete an action log entry
+// @Description Delete an action log entry
+// @Tags action-log
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Action Log Entry ID"
+// @Success 204
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /action-log/{id} [delete]
 func DeleteActionLog(w http.ResponseWriter, r *http.Request) {
 	ale := GetActionLogCtx(r)
 
-	if err := ale.Delete(database.DB); err != nil {
+	if err := ale.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}

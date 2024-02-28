@@ -2,7 +2,7 @@ package user_role
 
 import (
 	"errors"
-	"github.com/VATUSA/primary-api/pkg/database"
+	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -11,9 +11,9 @@ import (
 )
 
 type Request struct {
-	CID        uint   `json:"cid" example:"1293257" validate:"required"`
-	RoleID     string `json:"role_id" example:"ATM" validate:"required"`
-	FacilityID string `json:"facility_id" example:"ZDV" validate:"required"`
+	CID        uint             `json:"cid" example:"1293257" validate:"required"`
+	RoleID     constants.RoleID `json:"role_id" example:"ATM" validate:"required"`
+	FacilityID string           `json:"facility_id" example:"ZDV" validate:"required"`
 }
 
 func (req *Request) Validate() error {
@@ -48,6 +48,17 @@ func NewUserRoleListResponse(r []models.UserRole) []render.Renderer {
 	return list
 }
 
+// CreateUserRoles godoc
+// @Summary Create a new user role
+// @Description Create a new user role
+// @Tags user-roles
+// @Accept  json
+// @Produce  json
+// @Param user_role body Request true "User Role"
+// @Success 201 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /user-roles [post]
 func CreateUserRoles(w http.ResponseWriter, r *http.Request) {
 	req := &Request{}
 	if err := req.Bind(*r); err != nil {
@@ -60,12 +71,12 @@ func CreateUserRoles(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, req.CID) {
+	if !models.IsValidUser(req.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
-	if !models.IsValidRole(database.DB, req.RoleID) {
+	if !req.RoleID.IsValidRole() {
 		render.Render(w, r, utils.ErrInvalidRole)
 		return
 	}
@@ -76,7 +87,7 @@ func CreateUserRoles(w http.ResponseWriter, r *http.Request) {
 		FacilityID: req.FacilityID,
 	}
 
-	if err := userRole.Create(database.DB); err != nil {
+	if err := userRole.Create(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
@@ -85,14 +96,35 @@ func CreateUserRoles(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewUserRoleResponse(userRole))
 }
 
+// GetUserRole godoc
+// @Summary Get a user role
+// @Description Get a user role
+// @Tags user-roles
+// @Accept  json
+// @Produce  json
+// @Param id path int true "User Role ID"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /user-roles/{id} [get]
 func GetUserRole(w http.ResponseWriter, r *http.Request) {
 	userRole := GetUserRoleCtx(r)
 
 	render.Render(w, r, NewUserRoleResponse(userRole))
 }
 
+// ListUserRoles godoc
+// @Summary List user roles
+// @Description List user roles
+// @Tags user-roles
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} []Response
+// @Failure 422 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /user-roles [get]
 func ListUserRoles(w http.ResponseWriter, r *http.Request) {
-	userRoles, err := models.GetAllUserRoles(database.DB)
+	userRoles, err := models.GetAllUserRoles()
 	if err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
@@ -104,6 +136,17 @@ func ListUserRoles(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// UpdateUserRole godoc
+// @Summary Update a user role
+// @Description Update a user role
+// @Tags user-roles
+// @Accept  json
+// @Produce  json
+// @Param user_role body Request true "User Role"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /user-roles [put]
 func UpdateUserRole(w http.ResponseWriter, r *http.Request) {
 	userRole := GetUserRoleCtx(r)
 
@@ -118,12 +161,12 @@ func UpdateUserRole(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, req.CID) {
+	if !models.IsValidUser(req.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
-	if !models.IsValidRole(database.DB, req.RoleID) {
+	if !req.RoleID.IsValidRole() {
 		render.Render(w, r, utils.ErrInvalidRole)
 		return
 	}
@@ -132,7 +175,7 @@ func UpdateUserRole(w http.ResponseWriter, r *http.Request) {
 	userRole.RoleID = req.RoleID
 	userRole.FacilityID = req.FacilityID
 
-	if err := userRole.Update(database.DB); err != nil {
+	if err := userRole.Update(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
@@ -140,6 +183,17 @@ func UpdateUserRole(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewUserRoleResponse(userRole))
 }
 
+// PatchUserRole godoc
+// @Summary Patch a user role
+// @Description Patch a user role
+// @Tags user-roles
+// @Accept  json
+// @Produce  json
+// @Param user_role body Request true "User Role"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /user-roles [patch]
 func PatchUserRole(w http.ResponseWriter, r *http.Request) {
 	userRole := GetUserRoleCtx(r)
 
@@ -150,14 +204,14 @@ func PatchUserRole(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if req.CID != 0 {
-		if !models.IsValidUser(database.DB, req.CID) {
+		if !models.IsValidUser(req.CID) {
 			render.Render(w, r, utils.ErrInvalidCID)
 			return
 		}
 		userRole.CID = req.CID
 	}
 	if req.RoleID != "" {
-		if !models.IsValidRole(database.DB, req.RoleID) {
+		if !req.RoleID.IsValidRole() {
 			render.Render(w, r, utils.ErrInvalidRequest(errors.New("invalid role")))
 			return
 		}
@@ -167,7 +221,7 @@ func PatchUserRole(w http.ResponseWriter, r *http.Request) {
 		userRole.FacilityID = req.FacilityID
 	}
 
-	if err := userRole.Update(database.DB); err != nil {
+	if err := userRole.Update(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
@@ -175,10 +229,20 @@ func PatchUserRole(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewUserRoleResponse(userRole))
 }
 
+// DeleteUserRole godoc
+// @Summary Delete a user role
+// @Description Delete a user role
+// @Tags user-roles
+// @Accept  json
+// @Produce  json
+// @Success 204
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /user-roles [delete]
 func DeleteUserRole(w http.ResponseWriter, r *http.Request) {
 	userRole := GetUserRoleCtx(r)
 
-	if err := userRole.Delete(database.DB); err != nil {
+	if err := userRole.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}

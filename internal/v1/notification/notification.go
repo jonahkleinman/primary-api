@@ -2,7 +2,6 @@ package notification
 
 import (
 	"errors"
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -50,6 +49,17 @@ func NewNotificationListResponse(n []models.Notification) []render.Renderer {
 	return list
 }
 
+// CreateNotification godoc
+// @Summary Create a new notification
+// @Description Create a new notification
+// @Tags notification
+// @Accept  json
+// @Produce  json
+// @Param notification body Request true "Notification"
+// @Success 201 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /notification [post]
 func CreateNotification(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
@@ -74,7 +84,7 @@ func CreateNotification(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, data.CID) {
+	if !models.IsValidUser(data.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
@@ -87,7 +97,7 @@ func CreateNotification(w http.ResponseWriter, r *http.Request) {
 		ExpireAt: expireAt,
 	}
 
-	if err := n.Create(database.DB); err != nil {
+	if err := n.Create(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -96,13 +106,34 @@ func CreateNotification(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewNotificationResponse(n))
 }
 
+// GetNotification godoc
+// @Summary Get a notification
+// @Description Get a notification
+// @Tags notification
+// @Param id path int true "Notification ID"
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Router /notification/{id} [get]
 func GetNotification(w http.ResponseWriter, r *http.Request) {
 	n := GetNotificationCtx(r)
 	render.Render(w, r, NewNotificationResponse(n))
 }
 
+// ListNotifications godoc
+// @Summary List all notifications
+// @Description List all notifications
+// @Tags notification
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} []Response
+// @Failure 422 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /notification [get]
 func ListNotifications(w http.ResponseWriter, r *http.Request) {
-	notifications, err := models.GetAllNotifications(database.DB)
+	notifications, err := models.GetAllNotifications()
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
@@ -114,6 +145,18 @@ func ListNotifications(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// UpdateNotification godoc
+// @Summary Update a notification
+// @Description Update a notification
+// @Tags notification
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Notification ID"
+// @Param notification body Request true "Notification"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /notification/{id} [put]
 func UpdateNotification(w http.ResponseWriter, r *http.Request) {
 	n := GetNotificationCtx(r)
 	data := &Request{}
@@ -139,7 +182,7 @@ func UpdateNotification(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, data.CID) {
+	if !models.IsValidUser(data.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
@@ -150,7 +193,7 @@ func UpdateNotification(w http.ResponseWriter, r *http.Request) {
 	n.Body = data.Body
 	n.ExpireAt = expireAt
 
-	if err := n.Update(database.DB); err != nil {
+	if err := n.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -158,6 +201,18 @@ func UpdateNotification(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewNotificationResponse(n))
 }
 
+// PatchNotification godoc
+// @Summary Patch a notification
+// @Description Patch a notification
+// @Tags notification
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Notification ID"
+// @Param notification body Request true "Notification"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /notification/{id} [patch]
 func PatchNotification(w http.ResponseWriter, r *http.Request) {
 	n := GetNotificationCtx(r)
 	data := &Request{}
@@ -167,7 +222,7 @@ func PatchNotification(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if data.CID != 0 {
-		if !models.IsValidUser(database.DB, data.CID) {
+		if !models.IsValidUser(data.CID) {
 			render.Render(w, r, utils.ErrInvalidCID)
 			return
 		}
@@ -198,7 +253,7 @@ func PatchNotification(w http.ResponseWriter, r *http.Request) {
 		n.ExpireAt = expireAt
 	}
 
-	if err := n.Update(database.DB); err != nil {
+	if err := n.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -206,9 +261,19 @@ func PatchNotification(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewNotificationResponse(n))
 }
 
+// DeleteNotification godoc
+// @Summary Delete a notification
+// @Description Delete a notification
+// @Tags notification
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Notification ID"
+// @Success 204
+// @Failure 500 {object} utils.ErrResponse
+// @Router /notification/{id} [delete]
 func DeleteNotification(w http.ResponseWriter, r *http.Request) {
 	n := GetNotificationCtx(r)
-	if err := n.Delete(database.DB); err != nil {
+	if err := n.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}

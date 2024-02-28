@@ -2,7 +2,6 @@ package roster_request
 
 import (
 	"errors"
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/database/types"
 	"github.com/VATUSA/primary-api/pkg/utils"
@@ -50,6 +49,17 @@ func NewRosterRequestListResponse(r []models.RosterRequest) []render.Renderer {
 	return list
 }
 
+// CreateRosterRequest godoc
+// @Summary Create a new roster request
+// @Description Create a new roster request
+// @Tags roster-request
+// @Accept  json
+// @Produce  json
+// @Param roster_request body Request true "Roster Request"
+// @Success 201 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /roster-request [post]
 func CreateRosterRequest(w http.ResponseWriter, r *http.Request) {
 	req := &Request{}
 	if err := req.Bind(r); err != nil {
@@ -62,12 +72,12 @@ func CreateRosterRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, req.CID) {
+	if !models.IsValidUser(req.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
-	if !models.IsValidFacility(database.DB, req.Facility) {
+	if !models.IsValidFacility(req.Facility) {
 		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
@@ -80,7 +90,7 @@ func CreateRosterRequest(w http.ResponseWriter, r *http.Request) {
 		Reason:      req.Reason,
 	}
 
-	if err := rosterRequest.Create(database.DB); err != nil {
+	if err := rosterRequest.Create(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
@@ -89,14 +99,36 @@ func CreateRosterRequest(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewRosterRequestResponse(rosterRequest))
 }
 
+// GetRosterRequest godoc
+// @Summary Get a roster request
+// @Description Get a roster request
+// @Tags roster-request
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Roster Request ID"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /roster-request/{id} [get]
 func GetRosterRequest(w http.ResponseWriter, r *http.Request) {
 	rosterRequest := GetRosterRequestCtx(r)
 
 	render.Render(w, r, NewRosterRequestResponse(rosterRequest))
 }
 
+// ListRosterRequest godoc
+// @Summary List all roster requests
+// @Description List all roster requests
+// @Tags roster-request
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} []Response
+// @Failure 422 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /roster-request [get]
 func ListRosterRequest(w http.ResponseWriter, r *http.Request) {
-	rosterRequests, err := models.GetAllRosterRequests(database.DB)
+	rosterRequests, err := models.GetAllRosterRequests()
 	if err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
@@ -108,6 +140,19 @@ func ListRosterRequest(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// UpdateRosterRequest godoc
+// @Summary Update a roster request
+// @Description Update a roster request
+// @Tags roster-request
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Roster Request ID"
+// @Param roster_request body Request true "Roster Request"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /roster-request/{id} [put]
 func UpdateRosterRequest(w http.ResponseWriter, r *http.Request) {
 	req := GetRosterRequestCtx(r)
 	data := &Request{}
@@ -121,12 +166,12 @@ func UpdateRosterRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(database.DB, req.CID) {
+	if !models.IsValidUser(req.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
-	if !models.IsValidFacility(database.DB, req.Facility) {
+	if !models.IsValidFacility(req.Facility) {
 		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
@@ -149,7 +194,7 @@ func UpdateRosterRequest(w http.ResponseWriter, r *http.Request) {
 			roster.Home = true
 		}
 
-		if err := roster.Create(database.DB); err != nil {
+		if err := roster.Create(); err != nil {
 			render.Render(w, r, utils.ErrInvalidRequest(err))
 			return
 		}
@@ -161,7 +206,7 @@ func UpdateRosterRequest(w http.ResponseWriter, r *http.Request) {
 	req.Status = data.Status
 	req.Reason = data.Reason
 
-	if err := req.Update(database.DB); err != nil {
+	if err := req.Update(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
@@ -169,9 +214,20 @@ func UpdateRosterRequest(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewRosterRequestResponse(req))
 }
 
+// DeleteRosterRequest godoc
+// @Summary Delete a roster request
+// @Description Delete a roster request
+// @Tags roster-request
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Roster Request ID"
+// @Success 204
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /roster-request/{id} [delete]
 func DeleteRosterRequest(w http.ResponseWriter, r *http.Request) {
 	req := GetRosterRequestCtx(r)
-	if err := req.Delete(database.DB); err != nil {
+	if err := req.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}

@@ -3,7 +3,6 @@ package news
 import (
 	"errors"
 	"fmt"
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -48,6 +47,17 @@ func NewNewsListResponse(news []models.News) []render.Renderer {
 	return list
 }
 
+// CreateNews godoc
+// @Summary Create a new news entry
+// @Description Create a new news entry
+// @Tags news
+// @Accept  json
+// @Produce  json
+// @Param news body Request true "News Entry"
+// @Success 201 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /news [post]
 func CreateNews(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
@@ -61,7 +71,7 @@ func CreateNews(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidFacility(database.DB, data.Facility) {
+	if !models.IsValidFacility(data.Facility) {
 		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
@@ -73,7 +83,7 @@ func CreateNews(w http.ResponseWriter, r *http.Request) {
 		CreatedBy:   "System",
 	}
 
-	if err := news.Create(database.DB); err != nil {
+	if err := news.Create(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -82,13 +92,35 @@ func CreateNews(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewNewsResponse(news))
 }
 
+// GetNews godoc
+// @Summary Get a news entry
+// @Description Get a news entry
+// @Tags news
+// @Accept  json
+// @Produce  json
+// @Param id path string true "News ID"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /news/{id} [get]
 func GetNews(w http.ResponseWriter, r *http.Request) {
 	news := GetNewsCtx(r)
 	render.Render(w, r, NewNewsResponse(news))
 }
 
+// ListNews godoc
+// @Summary List all news entries
+// @Description List all news entries
+// @Tags news
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} []Response
+// @Failure 422 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /news [get]
 func ListNews(w http.ResponseWriter, r *http.Request) {
-	news, err := models.GetAllNews(database.DB)
+	news, err := models.GetAllNews()
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
@@ -100,6 +132,19 @@ func ListNews(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// UpdateNews godoc
+// @Summary Update a news entry
+// @Description Update a news entry
+// @Tags news
+// @Accept  json
+// @Produce  json
+// @Param id path string true "News ID"
+// @Param news body Request true "News Entry"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /news/{id} [put]
 func UpdateNews(w http.ResponseWriter, r *http.Request) {
 	news := GetNewsCtx(r)
 
@@ -114,7 +159,7 @@ func UpdateNews(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidFacility(database.DB, req.Facility) {
+	if !models.IsValidFacility(req.Facility) {
 		render.Render(w, r, utils.ErrInvalidRequest(errors.New("invalid facility")))
 		return
 	}
@@ -124,7 +169,7 @@ func UpdateNews(w http.ResponseWriter, r *http.Request) {
 	news.Description = req.Description
 	news.UpdatedBy = "System"
 
-	if err := news.Update(database.DB); err != nil {
+	if err := news.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -132,6 +177,19 @@ func UpdateNews(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewNewsResponse(news))
 }
 
+// PatchNews godoc
+// @Summary Patch a news entry
+// @Description Patch a news entry
+// @Tags news
+// @Accept  json
+// @Produce  json
+// @Param id path string true "News ID"
+// @Param news body Request true "News Entry"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /news/{id} [patch]
 func PatchNews(w http.ResponseWriter, r *http.Request) {
 	news := GetNewsCtx(r)
 
@@ -142,7 +200,7 @@ func PatchNews(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if req.Facility != "" {
-		if !models.IsValidFacility(database.DB, req.Facility) {
+		if !models.IsValidFacility(req.Facility) {
 			render.Render(w, r, utils.ErrInvalidRequest(errors.New("invalid facility")))
 			return
 		}
@@ -158,7 +216,7 @@ func PatchNews(w http.ResponseWriter, r *http.Request) {
 
 	news.UpdatedBy = "System"
 
-	if err := news.Update(database.DB); err != nil {
+	if err := news.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -166,9 +224,19 @@ func PatchNews(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewNewsResponse(news))
 }
 
+// DeleteNews godoc
+// @Summary Delete a news entry
+// @Description Delete a news entry
+// @Tags news
+// @Accept  json
+// @Produce  json
+// @Param id path string true "News ID"
+// @Success 204
+// @Failure 500 {object} utils.ErrResponse
+// @Router /news/{id} [delete]
 func DeleteNews(w http.ResponseWriter, r *http.Request) {
 	news := GetNewsCtx(r)
-	if err := news.Delete(database.DB); err != nil {
+	if err := news.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}

@@ -24,7 +24,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/action_log": {
+        "/action-log": {
             "get": {
                 "description": "List all action log entries",
                 "consumes": [
@@ -34,7 +34,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "action_log"
+                    "action-log"
                 ],
                 "summary": "List all action log entries",
                 "responses": {
@@ -47,8 +47,8 @@ const docTemplate = `{
                             }
                         }
                     },
-                    "429": {
-                        "description": "Too Many Requests",
+                    "422": {
+                        "description": "Unprocessable Entity",
                         "schema": {
                             "$ref": "#/definitions/utils.ErrResponse"
                         }
@@ -70,7 +70,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "action_log"
+                    "action-log"
                 ],
                 "summary": "Create a new action log entry",
                 "parameters": [
@@ -106,7 +106,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/action_log/{id}": {
+        "/action-log/{id}": {
             "get": {
                 "description": "Get an action log entry",
                 "consumes": [
@@ -116,7 +116,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "action_log"
+                    "action-log"
                 ],
                 "summary": "Get an action log entry",
                 "parameters": [
@@ -143,6 +143,3704 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an action log entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "action-log"
+                ],
+                "summary": "Update an action log entry",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Action Log Entry ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Action Log Entry",
+                        "name": "action_log",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/action_log.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/action_log.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete an action log entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "action-log"
+                ],
+                "summary": "Delete an action log entry",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Action Log Entry ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Patch an action log entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "action-log"
+                ],
+                "summary": "Patch an action log entry",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Action Log Entry ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Action Log Entry",
+                        "name": "action_log",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/action_log.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/action_log.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/disciplinary-log": {
+            "get": {
+                "description": "List all disciplinary log entries",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "disciplinary-log"
+                ],
+                "summary": "List all disciplinary log entries",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/disciplinary_log.Response"
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new disciplinary log entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "disciplinary-log"
+                ],
+                "summary": "Create a new disciplinary log entry",
+                "parameters": [
+                    {
+                        "description": "Disciplinary Log Entry",
+                        "name": "disciplinary_log",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/disciplinary_log.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/disciplinary_log.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/disciplinary-log/{id}": {
+            "get": {
+                "description": "Get a disciplinary log entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "disciplinary-log"
+                ],
+                "summary": "Get a disciplinary log entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Disciplinary Log Entry ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/disciplinary_log.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a disciplinary log entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "disciplinary-log"
+                ],
+                "summary": "Update a disciplinary log entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Disciplinary Log Entry ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Disciplinary Log Entry",
+                        "name": "disciplinary_log",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/disciplinary_log.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/disciplinary_log.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a disciplinary log entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "disciplinary-log"
+                ],
+                "summary": "Delete a disciplinary log entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Disciplinary Log Entry ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Patch a disciplinary log entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "disciplinary-log"
+                ],
+                "summary": "Patch a disciplinary log entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Disciplinary Log Entry ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Disciplinary Log Entry",
+                        "name": "disciplinary_log",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/disciplinary_log.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/disciplinary_log.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/documents": {
+            "get": {
+                "description": "List all documents",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "summary": "List all documents",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/document.Response"
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new document",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "summary": "Create a new document",
+                "parameters": [
+                    {
+                        "description": "Document",
+                        "name": "document",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/document.Request"
+                        }
+                    },
+                    {
+                        "type": "file",
+                        "description": "Document file",
+                        "name": "file",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/document.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/documents/facility/{Facility}": {
+            "get": {
+                "description": "List all documents by facility",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "summary": "List all documents by facility",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Facility ID",
+                        "name": "Facility",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/document.Response"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/documents/facility/{Facility}/category/{Category}": {
+            "get": {
+                "description": "List all documents by facility and category",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "summary": "List all documents by facility and category",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Facility ID",
+                        "name": "Facility",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Category",
+                        "name": "Category",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/document.Response"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/documents/{id}": {
+            "get": {
+                "description": "Get a document",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "summary": "Get a document",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Document ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/document.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a document",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "summary": "Update a document",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Document ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Document",
+                        "name": "document",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/document.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/document.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a document",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "summary": "Delete a document",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Document ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Patch a document",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "summary": "Patch a document",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Document ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Document",
+                        "name": "document",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/document.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/document.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/documents/{id}/upload": {
+            "post": {
+                "description": "Upload a document",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "summary": "Upload a document",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Document ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Document file",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/facility-log": {
+            "get": {
+                "description": "List facility log entries",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "facility-log"
+                ],
+                "summary": "List facility log entries",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/facility_log.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new facility log entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "facility-log"
+                ],
+                "summary": "Create a new facility log entry",
+                "parameters": [
+                    {
+                        "description": "Facility Log Entry",
+                        "name": "facility_log",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/facility_log.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/facility_log.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/facility-log/{id}": {
+            "get": {
+                "description": "Get a facility log entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "facility-log"
+                ],
+                "summary": "Get a facility log entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Facility Log Entry ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/facility_log.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a facility log entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "facility-log"
+                ],
+                "summary": "Update a facility log entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Facility Log Entry ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Facility Log Entry",
+                        "name": "facility_log",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/facility_log.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/facility_log.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a facility log entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "facility-log"
+                ],
+                "summary": "Delete a facility log entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Facility Log Entry ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Patch a facility log entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "facility-log"
+                ],
+                "summary": "Patch a facility log entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Facility Log Entry ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Facility Log Entry",
+                        "name": "facility_log",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/facility_log.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/facility_log.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/faq": {
+            "get": {
+                "description": "List all FAQs",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "faq"
+                ],
+                "summary": "List all FAQs",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/faq.Response"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new FAQ",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "faq"
+                ],
+                "summary": "Create a new FAQ",
+                "parameters": [
+                    {
+                        "description": "FAQ",
+                        "name": "faq",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/faq.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/faq.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/faq/{id}": {
+            "get": {
+                "description": "Get a FAQ",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "faq"
+                ],
+                "summary": "Get a FAQ",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "FAQ ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/faq.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a FAQ",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "faq"
+                ],
+                "summary": "Update a FAQ",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "FAQ ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "FAQ",
+                        "name": "faq",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/faq.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/faq.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a FAQ",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "faq"
+                ],
+                "summary": "Delete a FAQ",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "FAQ ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Patch a FAQ",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "faq"
+                ],
+                "summary": "Patch a FAQ",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "FAQ ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "FAQ",
+                        "name": "faq",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/faq.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/faq.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/feedback": {
+            "get": {
+                "description": "List feedback entries",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "feedback"
+                ],
+                "summary": "List feedback entries",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/feedback.Response"
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new feedback entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "feedback"
+                ],
+                "summary": "Create a new feedback entry",
+                "parameters": [
+                    {
+                        "description": "Feedback Entry",
+                        "name": "feedback",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/feedback.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/feedback.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/feedback/{id}": {
+            "get": {
+                "description": "Get a feedback entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "feedback"
+                ],
+                "summary": "Get a feedback entry",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Feedback ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/feedback.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a feedback entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "feedback"
+                ],
+                "summary": "Update a feedback entry",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Feedback ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Feedback Entry",
+                        "name": "feedback",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/feedback.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a feedback entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "feedback"
+                ],
+                "summary": "Delete a feedback entry",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Feedback ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Patch a feedback entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "feedback"
+                ],
+                "summary": "Patch a feedback entry",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Feedback ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Feedback Entry",
+                        "name": "feedback",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/feedback.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/news": {
+            "get": {
+                "description": "List all news entries",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "news"
+                ],
+                "summary": "List all news entries",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/news.Response"
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new news entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "news"
+                ],
+                "summary": "Create a new news entry",
+                "parameters": [
+                    {
+                        "description": "News Entry",
+                        "name": "news",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/news.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/news.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/news/{id}": {
+            "get": {
+                "description": "Get a news entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "news"
+                ],
+                "summary": "Get a news entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "News ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/news.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a news entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "news"
+                ],
+                "summary": "Update a news entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "News ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "News Entry",
+                        "name": "news",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/news.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/news.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a news entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "news"
+                ],
+                "summary": "Delete a news entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "News ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Patch a news entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "news"
+                ],
+                "summary": "Patch a news entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "News ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "News Entry",
+                        "name": "news",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/news.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/news.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/notification": {
+            "get": {
+                "description": "List all notifications",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notification"
+                ],
+                "summary": "List all notifications",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/notification.Response"
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new notification",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notification"
+                ],
+                "summary": "Create a new notification",
+                "parameters": [
+                    {
+                        "description": "Notification",
+                        "name": "notification",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/notification.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/notification.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/notification/{id}": {
+            "get": {
+                "description": "Get a notification",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notification"
+                ],
+                "summary": "Get a notification",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Notification ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/notification.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a notification",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notification"
+                ],
+                "summary": "Update a notification",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Notification ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Notification",
+                        "name": "notification",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/notification.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/notification.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a notification",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notification"
+                ],
+                "summary": "Delete a notification",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Notification ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Patch a notification",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notification"
+                ],
+                "summary": "Patch a notification",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Notification ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Notification",
+                        "name": "notification",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/notification.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/notification.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rating-change": {
+            "get": {
+                "description": "List rating changes",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rating-change"
+                ],
+                "summary": "List rating changes",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/rating_change.Response"
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new rating change",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rating-change"
+                ],
+                "summary": "Create a new rating change",
+                "parameters": [
+                    {
+                        "description": "Rating Change",
+                        "name": "rating_change",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/rating_change.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/rating_change.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rating-change/{id}": {
+            "get": {
+                "description": "Get a rating change",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rating-change"
+                ],
+                "summary": "Get a rating change",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Rating Change ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/rating_change.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a rating change",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rating-change"
+                ],
+                "summary": "Update a rating change",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Rating Change ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Rating Change",
+                        "name": "rating_change",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/rating_change.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/rating_change.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a rating change",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rating-change"
+                ],
+                "summary": "Delete a rating change",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Rating Change ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Patch a rating change",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rating-change"
+                ],
+                "summary": "Patch a rating change",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Rating Change ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Rating Change",
+                        "name": "rating_change",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/rating_change.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/rating_change.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/roster": {
+            "get": {
+                "description": "List rosters",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "roster"
+                ],
+                "summary": "List rosters",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/roster.Response"
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new roster",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "roster"
+                ],
+                "summary": "Create a new roster",
+                "parameters": [
+                    {
+                        "description": "Roster",
+                        "name": "roster",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/roster.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/roster.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/roster-request": {
+            "get": {
+                "description": "List all roster requests",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "roster-request"
+                ],
+                "summary": "List all roster requests",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/roster_request.Response"
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new roster request",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "roster-request"
+                ],
+                "summary": "Create a new roster request",
+                "parameters": [
+                    {
+                        "description": "Roster Request",
+                        "name": "roster_request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/roster_request.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/roster_request.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/roster-request/{id}": {
+            "get": {
+                "description": "Get a roster request",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "roster-request"
+                ],
+                "summary": "Get a roster request",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Roster Request ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/roster_request.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a roster request",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "roster-request"
+                ],
+                "summary": "Update a roster request",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Roster Request ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Roster Request",
+                        "name": "roster_request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/roster_request.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/roster_request.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a roster request",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "roster-request"
+                ],
+                "summary": "Delete a roster request",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Roster Request ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/roster/{id}": {
+            "get": {
+                "description": "Get a roster",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "roster"
+                ],
+                "summary": "Get a roster",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Roster ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/roster.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a roster",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "roster"
+                ],
+                "summary": "Update a roster",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Roster ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Roster",
+                        "name": "roster",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/roster.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a roster",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "roster"
+                ],
+                "summary": "Delete a roster",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Roster ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "description": "List users",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "List users",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Create a new user",
+                "parameters": [
+                    {
+                        "description": "User",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/user.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user-flag": {
+            "get": {
+                "description": "List user flags",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-flag"
+                ],
+                "summary": "List user flags",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/user_flag.Response"
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new user flag",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-flag"
+                ],
+                "summary": "Create a new user flag",
+                "parameters": [
+                    {
+                        "description": "User Flag",
+                        "name": "user_flag",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_flag.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/user_flag.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user-flag/{cid}": {
+            "delete": {
+                "description": "Delete a user flag",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-flag"
+                ],
+                "summary": "Delete a user flag",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "CID",
+                        "name": "cid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Patch a user flag",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-flag"
+                ],
+                "summary": "Patch a user flag",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "CID",
+                        "name": "cid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User Flag",
+                        "name": "user_flag",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_flag.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_flag.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user-flag/{id}": {
+            "get": {
+                "description": "Get a user flag",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-flag"
+                ],
+                "summary": "Get a user flag",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User Flag ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_flag.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user-roles": {
+            "get": {
+                "description": "List user roles",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-roles"
+                ],
+                "summary": "List user roles",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/user_role.Response"
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a user role",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-roles"
+                ],
+                "summary": "Update a user role",
+                "parameters": [
+                    {
+                        "description": "User Role",
+                        "name": "user_role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_role.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_role.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new user role",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-roles"
+                ],
+                "summary": "Create a new user role",
+                "parameters": [
+                    {
+                        "description": "User Role",
+                        "name": "user_role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_role.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/user_role.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a user role",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-roles"
+                ],
+                "summary": "Delete a user role",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Patch a user role",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-roles"
+                ],
+                "summary": "Patch a user role",
+                "parameters": [
+                    {
+                        "description": "User Role",
+                        "name": "user_role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_role.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_role.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user-roles/{id}": {
+            "get": {
+                "description": "Get a user role",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-roles"
+                ],
+                "summary": "Get a user role",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User Role ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_role.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{cid}": {
+            "get": {
+                "description": "Get a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get a user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "CID",
+                        "name": "cid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Update a user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "CID",
+                        "name": "cid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Delete a user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "CID",
+                        "name": "cid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Patch a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Patch a user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "CID",
+                        "name": "cid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/utils.ErrResponse"
                         }
@@ -208,6 +3906,1280 @@ const docTemplate = `{
                 }
             }
         },
+        "disciplinary_log.Request": {
+            "type": "object",
+            "required": [
+                "cid",
+                "entry"
+            ],
+            "properties": {
+                "cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "entry": {
+                    "type": "string",
+                    "example": "Changed Preferred OIs to RP"
+                },
+                "vatusa_only": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "disciplinary_log.Response": {
+            "type": "object",
+            "properties": {
+                "cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "created_by": {
+                    "type": "string",
+                    "example": "'1234567' or 'System'"
+                },
+                "entry": {
+                    "type": "string",
+                    "example": "Changed Preferred OIs to RP"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "updated_by": {
+                    "type": "string",
+                    "example": "'1234567' or 'System'"
+                },
+                "vatusa_only": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "document.Request": {
+            "type": "object",
+            "required": [
+                "category",
+                "description",
+                "facility",
+                "name"
+            ],
+            "properties": {
+                "category": {
+                    "type": "string",
+                    "enum": [
+                        "general",
+                        "training",
+                        "information_technology",
+                        "sops",
+                        "loas",
+                        "misc"
+                    ],
+                    "example": "general"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "General Division Policy"
+                },
+                "facility": {
+                    "type": "string",
+                    "example": "ZDV"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "DP001"
+                }
+            }
+        },
+        "document.Response": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.DocumentCategory"
+                        }
+                    ],
+                    "example": "general"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "created_by": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "description": {
+                    "type": "string",
+                    "example": "General Division Policy"
+                },
+                "facility": {
+                    "type": "string",
+                    "example": "ZDV"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "name": {
+                    "type": "string",
+                    "example": "DP001"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "updated_by": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "url": {
+                    "type": "string",
+                    "example": "https://zdvartcc.org"
+                }
+            }
+        },
+        "facility_log.Request": {
+            "type": "object",
+            "required": [
+                "entry",
+                "facility"
+            ],
+            "properties": {
+                "entry": {
+                    "type": "string",
+                    "example": "Changed Preferred OIs to RP"
+                },
+                "facility": {
+                    "type": "string",
+                    "example": "ZDV"
+                }
+            }
+        },
+        "facility_log.Response": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "created_by": {
+                    "type": "string",
+                    "example": "'1234567' or 'System'"
+                },
+                "entry": {
+                    "type": "string",
+                    "example": "Change URL from 'denartcc.org' to 'zdvartcc.org'"
+                },
+                "facility": {
+                    "type": "string",
+                    "example": "ZDV"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "updated_by": {
+                    "type": "string",
+                    "example": "'1234567' or 'System'"
+                }
+            }
+        },
+        "faq.Request": {
+            "type": "object",
+            "required": [
+                "answer",
+                "category",
+                "facility",
+                "question"
+            ],
+            "properties": {
+                "answer": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string",
+                    "enum": [
+                        "membership",
+                        "training",
+                        "technology",
+                        "misc"
+                    ]
+                },
+                "facility": {
+                    "type": "string"
+                },
+                "question": {
+                    "type": "string"
+                }
+            }
+        },
+        "faq.Response": {
+            "type": "object",
+            "properties": {
+                "answer": {
+                    "type": "string",
+                    "example": "There are no reasons not to join ZDV!"
+                },
+                "category": {
+                    "type": "string",
+                    "example": "membership"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "created_by": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "facility": {
+                    "type": "string",
+                    "example": "ZDV"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "question": {
+                    "type": "string",
+                    "example": "Why shouldn't I join ZDV?'"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "updated_by": {
+                    "type": "integer",
+                    "example": 1293257
+                }
+            }
+        },
+        "feedback.Request": {
+            "type": "object",
+            "required": [
+                "callsign",
+                "controller_cid",
+                "facility",
+                "notes",
+                "pilot_cid",
+                "position",
+                "rating",
+                "status"
+            ],
+            "properties": {
+                "callsign": {
+                    "type": "string",
+                    "example": "DAL123"
+                },
+                "comment": {
+                    "type": "string",
+                    "example": "Great work Raaj!"
+                },
+                "controller_cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "facility": {
+                    "type": "string",
+                    "example": "ZDV"
+                },
+                "notes": {
+                    "type": "string",
+                    "example": "Raaj was the best controller I've ever flown under."
+                },
+                "pilot_cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "position": {
+                    "type": "string",
+                    "example": "DEN_I_APP"
+                },
+                "rating": {
+                    "enum": [
+                        "unsatisfactory",
+                        "poor",
+                        "fair",
+                        "good",
+                        "excellent"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.FeedbackRating"
+                        }
+                    ],
+                    "example": "good"
+                },
+                "status": {
+                    "enum": [
+                        "pending",
+                        "approved",
+                        "denied"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.StatusType"
+                        }
+                    ],
+                    "example": "pending"
+                }
+            }
+        },
+        "feedback.Response": {
+            "type": "object",
+            "properties": {
+                "callsign": {
+                    "type": "string",
+                    "example": "DAL123"
+                },
+                "comment": {
+                    "type": "string",
+                    "example": "Great work Raaj!"
+                },
+                "controller": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "facility": {
+                    "type": "string",
+                    "example": "ZDV"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "notes": {
+                    "type": "string",
+                    "example": "Raaj was the best controller I've ever flown under."
+                },
+                "pilot": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "position": {
+                    "type": "string",
+                    "example": "DEN_I_APP"
+                },
+                "rating": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.FeedbackRating"
+                        }
+                    ],
+                    "example": "1"
+                },
+                "status": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.StatusType"
+                        }
+                    ],
+                    "example": "pending"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                }
+            }
+        },
+        "models.Role": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Air Traffic Manager"
+                },
+                "role": {
+                    "type": "string",
+                    "example": "ATM"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                }
+            }
+        },
+        "models.User": {
+            "type": "object",
+            "properties": {
+                "cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "controller_rating": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "discord_id": {
+                    "type": "string",
+                    "example": "1234567890"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "vatusa6@vatusa.net"
+                },
+                "first_name": {
+                    "type": "string",
+                    "example": "Raaj"
+                },
+                "flags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.UserFlag"
+                    }
+                },
+                "last_cert_sync": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "last_login": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "last_name": {
+                    "type": "string",
+                    "example": "Patel"
+                },
+                "pilot_rating": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "pref_name_enabled": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "preferred_name": {
+                    "type": "string",
+                    "example": "Raaj"
+                },
+                "preferred_ois": {
+                    "type": "string",
+                    "example": "RP"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.UserRole"
+                    }
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                }
+            }
+        },
+        "models.UserFlag": {
+            "type": "object",
+            "properties": {
+                "cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "no_staff_log_entry_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "no_staff_role": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "no_training": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "no_training_log_entry_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "no_transferring": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "no_transferring_log_entry_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "no_visiting": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "no_visiting_log_entry_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                }
+            }
+        },
+        "models.UserRole": {
+            "type": "object",
+            "properties": {
+                "cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "facility_id": {
+                    "type": "string",
+                    "example": "ZDV"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "role": {
+                    "$ref": "#/definitions/models.Role"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                }
+            }
+        },
+        "news.Request": {
+            "type": "object",
+            "required": [
+                "description",
+                "facility",
+                "title"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "DP001 has been revised to include new information regarding the new VATSIM Code of Conduct"
+                },
+                "facility": {
+                    "type": "string",
+                    "example": "ZDV"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "DP001 Revision 3 Released"
+                }
+            }
+        },
+        "news.Response": {
+            "type": "object",
+            "properties": {
+                "answer": {
+                    "type": "string",
+                    "example": "DP001 has been revised to include new information regarding the new VATSIM Code of Conduct"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "created_by": {
+                    "type": "string",
+                    "example": "'1293257' or 'System'"
+                },
+                "facility": {
+                    "type": "string",
+                    "example": "ZDV"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "news": {
+                    "type": "string",
+                    "example": "DP001 Revision 3 Released"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "updated_by": {
+                    "type": "string",
+                    "example": "1293257"
+                }
+            }
+        },
+        "notification.Request": {
+            "type": "object",
+            "required": [
+                "body",
+                "category",
+                "cid",
+                "expire_at",
+                "title"
+            ],
+            "properties": {
+                "body": {
+                    "type": "string",
+                    "example": "You have a training session coming up."
+                },
+                "category": {
+                    "type": "string",
+                    "example": "Training"
+                },
+                "cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "expire_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Upcoming Training Session"
+                }
+            }
+        },
+        "notification.Response": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string",
+                    "example": "You have a training session coming up."
+                },
+                "category": {
+                    "type": "string",
+                    "example": "Training"
+                },
+                "cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "expire_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Upcoming Training Session"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                }
+            }
+        },
+        "rating_change.Request": {
+            "type": "object",
+            "required": [
+                "cid",
+                "created_by_cid",
+                "new_rating",
+                "old_rating"
+            ],
+            "properties": {
+                "cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "created_by_cid": {
+                    "type": "string",
+                    "example": "1293257"
+                },
+                "new_rating": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "old_rating": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "rating_change.Response": {
+            "type": "object",
+            "properties": {
+                "cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "created_by_cid": {
+                    "type": "string",
+                    "example": "1293257"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "new_rating": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "old_rating": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                }
+            }
+        },
+        "roster.Request": {
+            "type": "object",
+            "required": [
+                "cid",
+                "facility",
+                "operating_initials",
+                "status"
+            ],
+            "properties": {
+                "cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "facility": {
+                    "type": "string",
+                    "example": "ZDV"
+                },
+                "home": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "instructor": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "mentor": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "operating_initials": {
+                    "type": "string",
+                    "example": "RP"
+                },
+                "status": {
+                    "description": "Active, LOA",
+                    "type": "string",
+                    "enum": [
+                        "active",
+                        "loa"
+                    ],
+                    "example": "Active"
+                },
+                "visiting": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "roster.Response": {
+            "type": "object",
+            "properties": {
+                "cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "deleted_at": {
+                    "description": "Soft Deletes for logging",
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "facility": {
+                    "type": "string",
+                    "example": "ZDV"
+                },
+                "home": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "instructor": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "mentor": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "operating_initials": {
+                    "type": "string",
+                    "example": "RP"
+                },
+                "status": {
+                    "description": "Active, LOA",
+                    "type": "string",
+                    "example": "Active"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "visiting": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "roster_request.Request": {
+            "type": "object",
+            "required": [
+                "cid",
+                "reason",
+                "request_type",
+                "requested_facility",
+                "status"
+            ],
+            "properties": {
+                "cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "reason": {
+                    "type": "string",
+                    "example": "I want to transfer to ZDV"
+                },
+                "request_type": {
+                    "enum": [
+                        "visiting",
+                        "transferring"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.RequestType"
+                        }
+                    ],
+                    "example": "visiting"
+                },
+                "requested_facility": {
+                    "type": "string",
+                    "example": "ZDV"
+                },
+                "status": {
+                    "enum": [
+                        "pending",
+                        "accepted",
+                        "rejected"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.StatusType"
+                        }
+                    ],
+                    "example": "pending"
+                }
+            }
+        },
+        "roster_request.Response": {
+            "type": "object",
+            "properties": {
+                "cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "reason": {
+                    "type": "string",
+                    "example": "I want to transfer to ZDV"
+                },
+                "requestType": {
+                    "$ref": "#/definitions/types.RequestType"
+                },
+                "requested_facility": {
+                    "type": "string",
+                    "example": "ZDV"
+                },
+                "status": {
+                    "$ref": "#/definitions/types.StatusType"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                }
+            }
+        },
+        "types.DocumentCategory": {
+            "type": "string",
+            "enum": [
+                "general",
+                "training",
+                "information_technology",
+                "sops",
+                "loas",
+                "misc"
+            ],
+            "x-enum-varnames": [
+                "General",
+                "Training",
+                "InformationTechnology",
+                "SOPs",
+                "LOAs",
+                "Misc"
+            ]
+        },
+        "types.FeedbackRating": {
+            "type": "string",
+            "enum": [
+                "unsatisfactory",
+                "poor",
+                "fair",
+                "good",
+                "excellent"
+            ],
+            "x-enum-varnames": [
+                "Unsatisfactory",
+                "Poor",
+                "Fair",
+                "Good",
+                "Excellent"
+            ]
+        },
+        "types.RequestType": {
+            "type": "string",
+            "enum": [
+                "visiting",
+                "transferring"
+            ],
+            "x-enum-varnames": [
+                "Visiting",
+                "Transferring"
+            ]
+        },
+        "types.StatusType": {
+            "type": "string",
+            "enum": [
+                "pending",
+                "accepted",
+                "rejected"
+            ],
+            "x-enum-varnames": [
+                "Pending",
+                "Accepted",
+                "Rejected"
+            ]
+        },
+        "user.Request": {
+            "type": "object",
+            "required": [
+                "cid",
+                "controller_rating",
+                "email",
+                "first_name",
+                "last_name",
+                "pilot_rating"
+            ],
+            "properties": {
+                "cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "controller_rating": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "discord_id": {
+                    "type": "string",
+                    "example": "1234567890"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "vatusa6@vatusa.net"
+                },
+                "first_name": {
+                    "type": "string",
+                    "example": "Raaj"
+                },
+                "last_cert_sync": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "last_name": {
+                    "type": "string",
+                    "example": "Patel"
+                },
+                "pilot_rating": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "preferred_name": {
+                    "type": "string",
+                    "example": "Raaj"
+                },
+                "preferred_ois": {
+                    "type": "string",
+                    "example": "RP"
+                }
+            }
+        },
+        "user.Response": {
+            "type": "object",
+            "properties": {
+                "cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "controller_rating": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "discord_id": {
+                    "type": "string",
+                    "example": "1234567890"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "vatusa6@vatusa.net"
+                },
+                "first_name": {
+                    "type": "string",
+                    "example": "Raaj"
+                },
+                "flags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.UserFlag"
+                    }
+                },
+                "last_cert_sync": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "last_login": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "last_name": {
+                    "type": "string",
+                    "example": "Patel"
+                },
+                "pilot_rating": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "pref_name_enabled": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "preferred_name": {
+                    "type": "string",
+                    "example": "Raaj"
+                },
+                "preferred_ois": {
+                    "type": "string",
+                    "example": "RP"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.UserRole"
+                    }
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                }
+            }
+        },
+        "user_flag.Request": {
+            "type": "object",
+            "required": [
+                "cid"
+            ],
+            "properties": {
+                "cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "no_staff_log_entry_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "no_staff_role": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "no_training": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "no_training_log_entry_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "no_transferring": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "no_transferring_log_entry_id": {
+                    "type": "integer"
+                },
+                "no_visiting": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "no_visiting_log_entry_id": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "user_flag.Response": {
+            "type": "object",
+            "properties": {
+                "cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "no_staff_log_entry_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "no_staff_role": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "no_training": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "no_training_log_entry_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "no_transferring": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "no_transferring_log_entry_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "no_visiting": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "no_visiting_log_entry_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                }
+            }
+        },
+        "user_role.Request": {
+            "type": "object",
+            "required": [
+                "cid",
+                "facility_id",
+                "role_id"
+            ],
+            "properties": {
+                "cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "facility_id": {
+                    "type": "string",
+                    "example": "ZDV"
+                },
+                "role_id": {
+                    "type": "string",
+                    "example": "ATM"
+                }
+            }
+        },
+        "user_role.Response": {
+            "type": "object",
+            "properties": {
+                "cid": {
+                    "type": "integer",
+                    "example": 1293257
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "facility_id": {
+                    "type": "string",
+                    "example": "ZDV"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "role": {
+                    "$ref": "#/definitions/models.Role"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                }
+            }
+        },
         "utils.ErrResponse": {
             "type": "object",
             "properties": {
@@ -231,9 +5203,9 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "0.1",
-	Host:             "localhost:8080",
+	Host:             "api.vatusa.local",
 	BasePath:         "/internal/v1",
-	Schemes:          []string{},
+	Schemes:          []string{"http"},
 	Title:            "VATUSA Internal",
 	Description:      "VATUSAs internal API for use by other internal VATUSA services.",
 	InfoInstanceName: "swagger",

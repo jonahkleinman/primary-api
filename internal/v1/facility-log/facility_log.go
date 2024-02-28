@@ -2,7 +2,6 @@ package facility_log
 
 import (
 	"errors"
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -46,6 +45,17 @@ func NewFacilityLogEntryListResponse(fle []models.FacilityLogEntry) []render.Ren
 	return list
 }
 
+// CreateFacilityLogEntry godoc
+// @Summary Create a new facility log entry
+// @Description Create a new facility log entry
+// @Tags facility-log
+// @Accept  json
+// @Produce  json
+// @Param facility_log body Request true "Facility Log Entry"
+// @Success 201 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /facility-log [post]
 func CreateFacilityLogEntry(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
@@ -58,7 +68,7 @@ func CreateFacilityLogEntry(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidFacility(database.DB, data.Facility) {
+	if !models.IsValidFacility(data.Facility) {
 		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
@@ -69,7 +79,7 @@ func CreateFacilityLogEntry(w http.ResponseWriter, r *http.Request) {
 		CreatedBy: "System",
 	}
 
-	if err := fle.Create(database.DB); err != nil {
+	if err := fle.Create(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -78,14 +88,34 @@ func CreateFacilityLogEntry(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewFacilityLogEntryResponse(fle))
 }
 
+// GetFacilityLog godoc
+// @Summary Get a facility log entry
+// @Description Get a facility log entry
+// @Tags facility-log
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Facility Log Entry ID"
+// @Success 200 {object} Response
+// @Failure 404 {object} utils.ErrResponse
+// @Router /facility-log/{id} [get]
 func GetFacilityLog(w http.ResponseWriter, r *http.Request) {
 	fle := GetFacilityLogCtx(r)
 
 	render.Render(w, r, NewFacilityLogEntryResponse(fle))
 }
 
+// ListFacilityLog godoc
+// @Summary List facility log entries
+// @Description List facility log entries
+// @Tags facility-log
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} Response
+// @Failure 422 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /facility-log [get]
 func ListFacilityLog(w http.ResponseWriter, r *http.Request) {
-	fle, err := models.GetAllFacilityLogEntries(database.DB)
+	fle, err := models.GetAllFacilityLogEntries()
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
@@ -97,6 +127,19 @@ func ListFacilityLog(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// UpdateFacilityLog godoc
+// @Summary Update a facility log entry
+// @Description Update a facility log entry
+// @Tags facility-log
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Facility Log Entry ID"
+// @Param facility_log body Request true "Facility Log Entry"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /facility-log/{id} [put]
 func UpdateFacilityLog(w http.ResponseWriter, r *http.Request) {
 	fle := GetFacilityLogCtx(r)
 
@@ -111,7 +154,7 @@ func UpdateFacilityLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidFacility(database.DB, data.Facility) {
+	if !models.IsValidFacility(data.Facility) {
 		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
@@ -119,7 +162,7 @@ func UpdateFacilityLog(w http.ResponseWriter, r *http.Request) {
 	fle.Facility = data.Facility
 	fle.Entry = data.Entry
 
-	if err := fle.Update(database.DB); err != nil {
+	if err := fle.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -127,6 +170,19 @@ func UpdateFacilityLog(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewFacilityLogEntryResponse(fle))
 }
 
+// PatchFacilityLog godoc
+// @Summary Patch a facility log entry
+// @Description Patch a facility log entry
+// @Tags facility-log
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Facility Log Entry ID"
+// @Param facility_log body Request true "Facility Log Entry"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /facility-log/{id} [patch]
 func PatchFacilityLog(w http.ResponseWriter, r *http.Request) {
 	fle := GetFacilityLogCtx(r)
 
@@ -137,7 +193,7 @@ func PatchFacilityLog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if data.Facility != "" {
-		if !models.IsValidFacility(database.DB, data.Facility) {
+		if !models.IsValidFacility(data.Facility) {
 			render.Render(w, r, utils.ErrInvalidFacility)
 			return
 		}
@@ -148,7 +204,7 @@ func PatchFacilityLog(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	if err := fle.Update(database.DB); err != nil {
+	if err := fle.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -156,10 +212,20 @@ func PatchFacilityLog(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewFacilityLogEntryResponse(fle))
 }
 
+// DeleteFacilityLog godoc
+// @Summary Delete a facility log entry
+// @Description Delete a facility log entry
+// @Tags facility-log
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Facility Log Entry ID"
+// @Success 204
+// @Failure 500 {object} utils.ErrResponse
+// @Router /facility-log/{id} [delete]
 func DeleteFacilityLog(w http.ResponseWriter, r *http.Request) {
 	fle := GetFacilityLogCtx(r)
 
-	if err := fle.Delete(database.DB); err != nil {
+	if err := fle.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}

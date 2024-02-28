@@ -2,7 +2,6 @@ package user_flag
 
 import (
 	"context"
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/go-chi/chi/v5"
 	"net/http"
@@ -35,7 +34,7 @@ func Ctx(next http.Handler) http.Handler {
 		}
 
 		userFlag := &models.UserFlag{ID: uint(UserFlagID)}
-		if err = userFlag.Get(database.DB); err != nil {
+		if err = userFlag.Get(); err != nil {
 			http.Error(w, "Invalid request", http.StatusBadRequest)
 			return
 		}

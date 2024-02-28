@@ -1,7 +1,7 @@
 package models
 
 import (
-	"gorm.io/gorm"
+	"github.com/VATUSA/primary-api/pkg/database"
 	"time"
 )
 
@@ -16,23 +16,23 @@ type News struct {
 	UpdatedBy   string    `json:"updated_by" example:"1293257"`
 }
 
-func (n *News) Create(db *gorm.DB) error {
-	return db.Create(n).Error
+func (n *News) Create() error {
+	return database.DB.Create(n).Error
 }
 
-func (n *News) Update(db *gorm.DB) error {
-	return db.Save(n).Error
+func (n *News) Update() error {
+	return database.DB.Save(n).Error
 }
 
-func (n *News) Delete(db *gorm.DB) error {
-	return db.Delete(n).Error
+func (n *News) Delete() error {
+	return database.DB.Delete(n).Error
 }
 
-func (n *News) Get(db *gorm.DB) error {
-	return db.Where("id = ?", n.ID).First(n).Error
+func (n *News) Get() error {
+	return database.DB.Where("id = ?", n.ID).First(n).Error
 }
 
-func GetAllNews(db *gorm.DB) ([]News, error) {
+func GetAllNews() ([]News, error) {
 	var news []News
-	return news, db.Find(&news).Error
+	return news, database.DB.Find(&news).Error
 }

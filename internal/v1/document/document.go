@@ -3,7 +3,6 @@ package document
 import (
 	"errors"
 	"fmt"
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/database/types"
 	"github.com/VATUSA/primary-api/pkg/storage"
@@ -54,6 +53,18 @@ func NewDocumentListResponse(d []models.Document) []render.Renderer {
 	return list
 }
 
+// CreateDocument godoc
+// @Summary Create a new document
+// @Description Create a new document
+// @Tags documents
+// @Accept  json
+// @Produce  json
+// @Param document body Request true "Document"
+// @Param file formData file false "Document file"
+// @Success 201 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /documents [post]
 func CreateDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
@@ -66,7 +77,7 @@ func CreateDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 		return
 	}
 
-	currentDocs, err := models.GetAllDocumentsByFacilityAndCategory(database.DB, data.Facility, types.DocumentCategory(data.Category))
+	currentDocs, err := models.GetAllDocumentsByFacilityAndCategory(data.Facility, types.DocumentCategory(data.Category))
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
@@ -104,7 +115,7 @@ func CreateDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 		URL:         path.Join(endpoint, directory, filename),
 	}
 
-	if err := document.Create(database.DB); err != nil {
+	if err := document.Create(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 
 		err := storage.PublicBucket.Delete(directory, filename)
@@ -118,13 +129,35 @@ func CreateDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 	render.Render(w, r, NewDocumentResponse(document))
 }
 
+// GetDocument godoc
+// @Summary Get a document
+// @Description Get a document
+// @Tags documents
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Document ID"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /documents/{id} [get]
 func GetDocument(w http.ResponseWriter, r *http.Request) {
 	doc := GetDocumentCtx(r)
 	render.Render(w, r, NewDocumentResponse(doc))
 }
 
+// ListDocuments godoc
+// @Summary List all documents
+// @Description List all documents
+// @Tags documents
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} []Response
+// @Failure 422 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /documents [get]
 func ListDocuments(w http.ResponseWriter, r *http.Request) {
-	docs, err := models.GetAllDocuments(database.DB)
+	docs, err := models.GetAllDocuments()
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
@@ -136,6 +169,18 @@ func ListDocuments(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// ListDocumentsByFac godoc
+// @Summary List all documents by facility
+// @Description List all documents by facility
+// @Tags documents
+// @Accept  json
+// @Produce  json
+// @Param Facility path string true "Facility ID"
+// @Success 200 {object} []Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 422 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /documents/facility/{Facility} [get]
 func ListDocumentsByFac(w http.ResponseWriter, r *http.Request) {
 	facId := chi.URLParam(r, "Facility")
 	if facId == "" {
@@ -143,19 +188,31 @@ func ListDocumentsByFac(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	docs, err := models.GetAllDocumentsByFacility(database.DB, facId)
+	docs, err := models.GetAllDocumentsByFacility(facId)
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	if err := render.RenderList(w, r, NewDocumentListResponse(docs)); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		render.Render(w, r, utils.ErrRender(err))
 		return
-
 	}
 }
 
+// ListDocumentsByFacByCat godoc
+// @Summary List all documents by facility and category
+// @Description List all documents by facility and category
+// @Tags documents
+// @Accept  json
+// @Produce  json
+// @Param Facility path string true "Facility ID"
+// @Param Category path string true "Category"
+// @Success 200 {object} []Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 422 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /documents/facility/{Facility}/category/{Category} [get]
 func ListDocumentsByFacByCat(w http.ResponseWriter, r *http.Request) {
 	facId := chi.URLParam(r, "Facility")
 	cat := chi.URLParam(r, "Category")
@@ -164,18 +221,31 @@ func ListDocumentsByFacByCat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	docs, err := models.GetAllDocumentsByFacilityAndCategory(database.DB, facId, types.DocumentCategory(cat))
+	docs, err := models.GetAllDocumentsByFacilityAndCategory(facId, types.DocumentCategory(cat))
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	if err := render.RenderList(w, r, NewDocumentListResponse(docs)); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		render.Render(w, r, utils.ErrRender(err))
 		return
 	}
 }
 
+// UpdateDocument godoc
+// @Summary Update a document
+// @Description Update a document
+// @Tags documents
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Document ID"
+// @Param document body Request true "Document"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /documents/{id} [put]
 func UpdateDocument(w http.ResponseWriter, r *http.Request) {
 	doc := GetDocumentCtx(r)
 
@@ -197,7 +267,7 @@ func UpdateDocument(w http.ResponseWriter, r *http.Request) {
 	doc.Description = data.Description
 	doc.Category = types.DocumentCategory(data.Category)
 
-	if err := doc.Update(database.DB); err != nil {
+	if err := doc.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -205,6 +275,19 @@ func UpdateDocument(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewDocumentResponse(doc))
 }
 
+// PatchDocument godoc
+// @Summary Patch a document
+// @Description Patch a document
+// @Tags documents
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Document ID"
+// @Param document body Request true "Document"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /documents/{id} [patch]
 func PatchDocument(w http.ResponseWriter, r *http.Request) {
 	doc := GetDocumentCtx(r)
 
@@ -229,7 +312,7 @@ func PatchDocument(w http.ResponseWriter, r *http.Request) {
 		doc.Category = types.DocumentCategory(data.Category)
 	}
 
-	if err := doc.Update(database.DB); err != nil {
+	if err := doc.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -237,6 +320,17 @@ func PatchDocument(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewDocumentResponse(doc))
 }
 
+// DeleteDocument godoc
+// @Summary Delete a document
+// @Description Delete a document
+// @Tags documents
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Document ID"
+// @Success 204
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /documents/{id} [delete]
 func DeleteDocument(w http.ResponseWriter, r *http.Request) {
 	doc := GetDocumentCtx(r)
 
@@ -248,7 +342,7 @@ func DeleteDocument(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := doc.Delete(database.DB); err != nil {
+	if err := doc.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -257,6 +351,18 @@ func DeleteDocument(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// UploadDocument godoc
+// @Summary Upload a document
+// @Description Upload a document
+// @Tags documents
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Document ID"
+// @Param file formData file true "Document file"
+// @Success 204
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /documents/{id}/upload [post]
 func UploadDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 	data := GetDocumentCtx(r)
 
@@ -288,7 +394,7 @@ func UploadDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 
 	// Update the URL in the database
 	data.URL = path.Join(endpoint, directory, filename)
-	if err := data.Update(database.DB); err != nil {
+	if err := data.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}

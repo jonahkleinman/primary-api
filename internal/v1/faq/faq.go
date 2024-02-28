@@ -1,7 +1,6 @@
 package faq
 
 import (
-	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -47,6 +46,17 @@ func NewFAQListResponse(faqs []models.FAQ) []render.Renderer {
 	return list
 }
 
+// CreateFAQ godoc
+// @Summary Create a new FAQ
+// @Description Create a new FAQ
+// @Tags faq
+// @Accept  json
+// @Produce  json
+// @Param faq body Request true "FAQ"
+// @Success 201 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /faq [post]
 func CreateFAQ(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
@@ -59,7 +69,7 @@ func CreateFAQ(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidFacility(database.DB, data.Facility) {
+	if !models.IsValidFacility(data.Facility) {
 		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
@@ -72,7 +82,7 @@ func CreateFAQ(w http.ResponseWriter, r *http.Request) {
 		CreatedBy: 1,
 	}
 
-	if err := faq.Create(database.DB); err != nil {
+	if err := faq.Create(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -82,14 +92,35 @@ func CreateFAQ(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// GetFAQ godoc
+// @Summary Get a FAQ
+// @Description Get a FAQ
+// @Tags faq
+// @Accept  json
+// @Produce  json
+// @Param id path string true "FAQ ID"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /faq/{id} [get]
 func GetFAQ(w http.ResponseWriter, r *http.Request) {
 	faq := GetFAQCtx(r)
 
 	render.Render(w, r, NewFAQResponse(faq))
 }
 
+// ListFAQ godoc
+// @Summary List all FAQs
+// @Description List all FAQs
+// @Tags faq
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} []Response
+// @Failure 500 {object} utils.ErrResponse
+// @Router /faq [get]
 func ListFAQ(w http.ResponseWriter, r *http.Request) {
-	faqs, err := models.GetAllFAQ(database.DB)
+	faqs, err := models.GetAllFAQ()
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
@@ -101,6 +132,19 @@ func ListFAQ(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// UpdateFAQ godoc
+// @Summary Update a FAQ
+// @Description Update a FAQ
+// @Tags faq
+// @Accept  json
+// @Produce  json
+// @Param id path string true "FAQ ID"
+// @Param faq body Request true "FAQ"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /faq/{id} [put]
 func UpdateFAQ(w http.ResponseWriter, r *http.Request) {
 	faq := GetFAQCtx(r)
 
@@ -115,7 +159,7 @@ func UpdateFAQ(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidFacility(database.DB, data.Facility) {
+	if !models.IsValidFacility(data.Facility) {
 		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
@@ -125,7 +169,7 @@ func UpdateFAQ(w http.ResponseWriter, r *http.Request) {
 	faq.Answer = data.Answer
 	faq.Category = data.Category
 
-	if err := faq.Update(database.DB); err != nil {
+	if err := faq.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -133,6 +177,19 @@ func UpdateFAQ(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewFAQResponse(faq))
 }
 
+// PatchFAQ godoc
+// @Summary Patch a FAQ
+// @Description Patch a FAQ
+// @Tags faq
+// @Accept  json
+// @Produce  json
+// @Param id path string true "FAQ ID"
+// @Param faq body Request true "FAQ"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /faq/{id} [patch]
 func PatchFAQ(w http.ResponseWriter, r *http.Request) {
 	faq := GetFAQCtx(r)
 
@@ -143,7 +200,7 @@ func PatchFAQ(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if data.Facility != "" {
-		if !models.IsValidFacility(database.DB, data.Facility) {
+		if !models.IsValidFacility(data.Facility) {
 			render.Render(w, r, utils.ErrInvalidFacility)
 			return
 		}
@@ -159,7 +216,7 @@ func PatchFAQ(w http.ResponseWriter, r *http.Request) {
 		faq.Category = data.Category
 	}
 
-	if err := faq.Update(database.DB); err != nil {
+	if err := faq.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -167,10 +224,20 @@ func PatchFAQ(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewFAQResponse(faq))
 }
 
+// DeleteFAQ godoc
+// @Summary Delete a FAQ
+// @Description Delete a FAQ
+// @Tags faq
+// @Accept  json
+// @Produce  json
+// @Param id path string true "FAQ ID"
+// @Success 204
+// @Failure 500 {object} utils.ErrResponse
+// @Router /faq/{id} [delete]
 func DeleteFAQ(w http.ResponseWriter, r *http.Request) {
 	faq := GetFAQCtx(r)
 
-	if err := faq.Delete(database.DB); err != nil {
+	if err := faq.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
 	}
