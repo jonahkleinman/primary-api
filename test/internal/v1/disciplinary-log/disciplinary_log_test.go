@@ -29,80 +29,93 @@ func setupRouter() *chi.Mux {
 	return r
 }
 
-func TestCreateDisciplinaryLogEntry(t *testing.T) {
+func TestDisciplinaryLog(t *testing.T) {
 	r := setupRouter()
 
-	req, _ := http.NewRequest("POST", "/disciplinary", strings.NewReader(`{"cid":123456,"entry":"Test entry","vatusa_only":false}`))
-	req.Header.Set("Content-Type", "application/json")
+	t.Run("create", func(t *testing.T) {
+		tests := []struct {
+			name     string
+			body     string
+			expected int
+		}{
+			{"valid request", `{"cid":123456,"entry":"Test entry","vatusa_only":false}`, http.StatusCreated},
+			{"invalid cid", `{"cid":0,"entry":"Test entry","vatusa_only":false}`, http.StatusBadRequest},
+			{"empty entry", `{"cid":123456,"entry":"","vatusa_only":false}`, http.StatusBadRequest},
+			{"missing field", `{"cid":123456,"vatusa_only":false}`, http.StatusBadRequest},
+		}
 
-	rr := httptest.NewRecorder()
-	r.ServeHTTP(rr, req)
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				req := httptest.NewRequest("POST", "/disciplinary", strings.NewReader(tt.body))
+				req.Header.Set("Content-Type", "application/json")
 
-	assert.Equal(t, http.StatusCreated, rr.Code)
-}
+				rr := httptest.NewRecorder()
+				r.ServeHTTP(rr, req)
 
-func TestListDisciplinaryLog(t *testing.T) {
-	r := setupRouter()
+				defer rr.Body.Close()
+				assert.Equal(t, tt.expected, rr.Code)
+			})
+		}
+	})
 
-	req, _ := http.NewRequest("GET", "/disciplinary", nil)
-	rr := httptest.NewRecorder()
-	r.ServeHTTP(rr, req)
+	t.Run("list", func(t *testing.T) {
+		req := httptest.NewRequest("GET", "/disciplinary", nil)
+		rr := httptest.NewRecorder()
+		r.ServeHTTP(rr, req)
 
-	assert.Equal(t, http.StatusOK, rr.Code)
-}
+		defer rr.Body.Close()
+		assert.Equal(t, http.StatusOK, rr.Code)
+	})
 
-func TestGetDisciplinaryLog(t *testing.T) {
-	r := setupRouter()
+	t.Run("get", func(t *testing.T) {
+		dle := &models.DisciplinaryLogEntry{CID: 123456, Entry: "Test entry", VATUSAOnly: false}
+		database.DB.Create(&dle)
 
-	dle := &models.DisciplinaryLogEntry{CID: 123456, Entry: "Test entry", VATUSAOnly: false}
-	database.DB.Create(&dle)
+		req := httptest.NewRequest("GET", "/disciplinary/"+dle.ID, nil)
+		rr := httptest.NewRecorder()
+		r.ServeHTTP(rr, req)
 
-	req, _ := http.NewRequest("GET", "/disciplinary/"+dle.ID, nil)
-	rr := httptest.NewRecorder()
-	r.ServeHTTP(rr, req)
+		defer rr.Body.Close()
+		assert.Equal(t, http.StatusOK, rr.Code)
+	})
 
-	assert.Equal(t, http.StatusOK, rr.Code)
-}
+	t.Run("update", func(t *testing.T) {
+		dle := &models.DisciplinaryLogEntry{CID: 123456, Entry: "Test entry", VATUSAOnly: false}
+		database.DB.Create(&dle)
 
-func TestUpdateDisciplinaryLog(t *testing.T) {
-	r := setupRouter()
+		req := httptest.NewRequest("PUT", "/disciplinary/"+dle.ID, strings.NewReader(`{"cid":654321,"entry":"Updated entry","vatusa_only":true}`))
+		req.Header.Set("Content-Type", "application/json")
 
-	dle := &models.DisciplinaryLogEntry{CID: 123456, Entry: "Test entry", VATUSAOnly: false}
-	database.DB.Create(&dle)
+		rr := httptest.NewRecorder()
+		r.ServeHTTP(rr, req)
 
-	req, _ := http.NewRequest("PUT", "/disciplinary/"+dle.ID, strings.NewReader(`{"cid":654321,"entry":"Updated entry","vatusa_only":true}`))
-	req.Header.Set("Content-Type", "application/json")
+		defer rr.Body.Close()
+		assert.Equal(t, http.StatusOK, rr.Code)
+	})
 
-	rr := httptest.NewRecorder()
-	r.ServeHTTP(rr, req)
+	t.Run("patch", func(t *testing.T) {
+		dle := &models.DisciplinaryLogEntry{CID: 123456, Entry: "Test entry", VATUSAOnly: false}
+		database.DB.Create(&dle)
 
-	assert.Equal(t, http.StatusOK, rr.Code)
-}
+		req := httptest.NewRequest("PATCH", "/disciplinary/"+dle.ID, strings.NewReader(`{"entry":"Patched entry"}`))
+		req.Header.Set("Content-Type", "application/json")
 
-func TestPatchDisciplinaryLog(t *testing.T) {
-	r := setupRouter()
+		rr := httptest.NewRecorder()
+		r.ServeHTTP(rr, req)
 
-	dle := &models.DisciplinaryLogEntry{CID: 123456, Entry: "Test entry", VATUSAOnly: false}
-	database.DB.Create(&dle)
+		defer rr.Body.Close()
+		assert.Equal(t, http.StatusOK, rr.Code)
+	})
 
-	req, _ := http.NewRequest("PATCH", "/disciplinary/"+dle.ID, strings.NewReader(`{"entry":"Patched entry"}`))
-	req.Header.Set("Content-Type", "application/json")
+	t.Run("delete", func(t *testing.T) {
+		dle := &models.DisciplinaryLogEntry{CID: 123456, Entry: "Test entry", VATUSAOnly: false}
+		database.DB.Create(&dle)
 
-	rr := httptest.NewRecorder()
-	r.ServeHTTP(rr, req)
+		req := httptest.NewRequest("DELETE", "/disciplinary/"+dle.ID, nil)
+		rr := httptest.NewRecorder()
+		r.ServeHTTP(rr, req)
 
-	assert.Equal(t, http.StatusOK, rr.Code)
-}
-
-func TestDeleteDisciplinaryLog(t *testing.T) {
-	r := setupRouter()
-
-	dle := &models.DisciplinaryLogEntry{CID: 123456, Entry: "Test entry", VATUSAOnly: false}
-	database.DB.Create(&dle)
-
-	req, _ := http.NewRequest("DELETE", "/disciplinary/"+dle.ID, nil)
-	rr := httptest.NewRecorder()
-	r.ServeHTTP(rr, req)
-
-	assert.Equal(t, http.StatusNoContent, rr.Code)
+		defer rr.Body.Close()
+		assert.Equal(t, http.StatusNoContent, rr.Code)
+	})
 }
